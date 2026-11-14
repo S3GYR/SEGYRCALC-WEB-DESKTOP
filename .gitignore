@@ -1,0 +1,83 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.coverage
+htmlcov/
+coverage.xml
+
+# Node / Vite
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# PyInstaller / builds
+build/
+build-*/
+dist/
+dist-*/
+*.spec.bak
+release/
+releases/
+deliveries/
+installer/output/
+installer/Output/
+*.exe
+*.msi
+*.zip
+*.7z
+
+# Packages et preuves générées
+evidence/
+**/package/
+*_package/
+SEGYRCALC-WEB08-*/
+
+# Données locales et clients
+clients.db
+*.db
+*.sqlite
+*.sqlite3
+/data/
+/qualification-projects/
+/qualification-exports/
+/exports/
+/logs/
+*.jsonl
+*.log
+
+# Secrets et certificats
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Sauvegardes et fichiers temporaires
+*.bak
+*.tmp
+*.temp
+*.swp
+*~
+Thumbs.db
+.DS_Store
+
+# IDE
+.idea/
+.vscode/

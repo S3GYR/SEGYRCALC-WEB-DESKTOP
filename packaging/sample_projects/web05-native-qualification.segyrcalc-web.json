@@ -1,0 +1,236 @@
+{
+  "calcelect_v14": {
+    "project": {
+      "client_snapshot": {
+        "address": "5 rue du Bilan",
+        "captured_at": "2026-11-12T17:01:37.490483+00:00",
+        "client_id": null,
+        "company_name": "SEGYR Technologies",
+        "contact_name": "",
+        "country": "",
+        "email": "",
+        "logo": null,
+        "phone": ""
+      },
+      "electrical": {
+        "boards": [
+          {
+            "board_id": "TGBT-01",
+            "board_type": "TGBT",
+            "description": "",
+            "designation": "TGBT principal",
+            "has_neutral": true,
+            "network": "TRI",
+            "parent_feeder_id": null,
+            "phases_available": [
+              "L1",
+              "L2",
+              "L3"
+            ],
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          },
+          {
+            "board_id": "TD-01",
+            "board_type": "DIVISIONNAIRE",
+            "description": "",
+            "designation": "Tableau A",
+            "has_neutral": true,
+            "network": "TRI",
+            "parent_feeder_id": "DEP-01",
+            "phases_available": [
+              "L1",
+              "L2",
+              "L3"
+            ],
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          },
+          {
+            "board_id": "TD-02",
+            "board_type": "DIVISIONNAIRE",
+            "description": "",
+            "designation": "Tableau B",
+            "has_neutral": true,
+            "network": "TRI",
+            "parent_feeder_id": "DEP-02",
+            "phases_available": [
+              "L1",
+              "L2",
+              "L3"
+            ],
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          }
+        ],
+        "client": "SEGYR Technologies",
+        "created_at": "2026-11-12T17:01:37Z",
+        "description": "",
+        "engine_version": "1.3.0",
+        "feeders": [
+          {
+            "description": "Créé par WEB-03",
+            "designation": "Alimentation Tableau A",
+            "downstream_board_id": "TD-01",
+            "feeder_id": "DEP-01",
+            "has_neutral": true,
+            "ks": null,
+            "member_load_ids": [],
+            "network": "TRI",
+            "parent_board_id": "TGBT-01",
+            "phase": null,
+            "voltage_ln_v": null,
+            "voltage_v": "400"
+          },
+          {
+            "description": "Créé par WEB-03",
+            "designation": "Alimentation Tableau B",
+            "downstream_board_id": "TD-02",
+            "feeder_id": "DEP-02",
+            "has_neutral": true,
+            "ks": null,
+            "member_load_ids": [],
+            "network": "TRI",
+            "parent_board_id": "TGBT-01",
+            "phase": null,
+            "voltage_ln_v": null,
+            "voltage_v": "400"
+          },
+          {
+            "description": "",
+            "designation": "Départ A",
+            "downstream_board_id": null,
+            "feeder_id": "DEP-03",
+            "has_neutral": true,
+            "ks": "0.9",
+            "member_load_ids": [
+              "REC-01",
+              "REC-02"
+            ],
+            "network": "TRI",
+            "parent_board_id": "TGBT-01",
+            "phase": null,
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          },
+          {
+            "description": "",
+            "designation": "Départ B",
+            "downstream_board_id": null,
+            "feeder_id": "DEP-04",
+            "has_neutral": true,
+            "ks": "0.8",
+            "member_load_ids": [
+              "REC-03"
+            ],
+            "network": "TRI",
+            "parent_board_id": "TGBT-01",
+            "phase": null,
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          },
+          {
+            "description": "",
+            "designation": "Départ C",
+            "downstream_board_id": null,
+            "feeder_id": "DEP-05",
+            "has_neutral": true,
+            "ks": "0.85",
+            "member_load_ids": [
+              "REC-04"
+            ],
+            "network": "TRI",
+            "parent_board_id": "TGBT-01",
+            "phase": null,
+            "voltage_ln_v": "230",
+            "voltage_v": "400"
+          }
+        ],
+        "legacy_groups": [],
+        "loads": [
+          {
+            "designation": "Éclairage A",
+            "feeder_id": "DEP-03",
+            "ku": "0.5",
+            "load_id": "REC-01",
+            "network": "MONO",
+            "nominal_power": "1200",
+            "phase": "L1",
+            "power_factor": "0.9",
+            "power_unit": "W",
+            "quantity": 4,
+            "voltage_v": "230"
+          },
+          {
+            "designation": "Éclairage B",
+            "feeder_id": "DEP-03",
+            "ku": "0.7",
+            "load_id": "REC-02",
+            "network": "MONO",
+            "nominal_power": "800",
+            "phase": "L2",
+            "power_factor": "0.9",
+            "power_unit": "W",
+            "quantity": 3,
+            "voltage_v": "230"
+          },
+          {
+            "designation": "Moteur C",
+            "feeder_id": "DEP-04",
+            "ku": "0.9",
+            "load_id": "REC-03",
+            "network": "TRI",
+            "nominal_power": "5000",
+            "phase": null,
+            "power_factor": "0.9",
+            "power_unit": "W",
+            "quantity": 2,
+            "voltage_v": "400"
+          },
+          {
+            "designation": "Moteur D",
+            "feeder_id": "DEP-05",
+            "ku": "0.9",
+            "load_id": "REC-04",
+            "network": "TRI",
+            "nominal_power": "3000",
+            "phase": null,
+            "power_factor": "0.9",
+            "power_unit": "W",
+            "quantity": 1,
+            "voltage_v": "400"
+          }
+        ],
+        "name": "Bilan natif WEB-05",
+        "project_id": "70844fb3-1e71-49a4-b8d6-4574a961f9fb",
+        "reference": "WEB05-NATIF",
+        "updated_at": "2026-11-12T17:02:16Z"
+      },
+      "metadata": {
+        "author": "Qualification Windows",
+        "client_id": null,
+        "code": "WEB05-NATIF",
+        "created_at": "2026-11-12T17:01:37.490249+00:00",
+        "designation": "Bilan natif WEB-05",
+        "progress": "NOT_DEFINED",
+        "revision": "A",
+        "standard": "NF C 15-100",
+        "updated_at": "2026-11-12T17:01:37.490252+00:00"
+      },
+      "project_id": "70844fb3-1e71-49a4-b8d6-4574a961f9fb",
+      "source": null
+    },
+    "schema": "CALCELECT_V14",
+    "schema_version": "1.4.2"
+  },
+  "schema": "SEGYRCALC_WEB_PROJECT",
+  "schema_version": "0.3.0",
+  "web": {
+    "address": "5 rue du Bilan",
+    "application": "SEGYRCALC Web Desktop",
+    "created_by": "Qualification Windows",
+    "format_version": "0.3.0",
+    "observations": "Cycle bilan de puissance WEB-05",
+    "site": "Site bilan natif"
+  }
+}
