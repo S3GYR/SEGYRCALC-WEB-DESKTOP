@@ -282,9 +282,9 @@ def test_pdf_xlsx_csv_exports_are_readable(tmp_path: Path) -> None:
 
 def test_web05_natif_receiver_values_and_pdf_layout(tmp_path: Path) -> None:
     sample_src = (
-        Path(__file__).resolve().parents[2].parent
-        / "web-power-balance-05"
-        / "qualification-projects"
+        Path(__file__).resolve().parents[2]
+        / "packaging"
+        / "sample_projects"
         / "web05-native-qualification.segyrcalc-web.json"
     )
     assert sample_src.is_file()

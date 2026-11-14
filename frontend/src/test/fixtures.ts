@@ -169,7 +169,7 @@ export const project: ProjectPayload = {
     revision: 1,
     calculation_revision: 1,
     stale: false,
-    file_path: "D:\\CALCELECT\\development\\SEGYRCALC-WEB-DESKTOP-DEV-01\\web-project-management-03\\qualification-projects\\test.segyrcalc-web.json",
+    file_path: null,
     read_only_source: false,
     source_format: "WEB-03",
     last_error: null,

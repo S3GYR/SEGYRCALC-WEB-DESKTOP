@@ -1,8 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+
+ROOT = Path(SPECPATH).resolve()
 
 a = Analysis(
-    ['D:/CALCELECT/development/SEGYRCALC-WEB-DESKTOP-DEV-01/web-windows-packaging-07/qualification/sqlite_minimal.py'],
+    [str(ROOT / 'packaging' / 'sqlite_minimal.py')],
     pathex=[],
     binaries=[],
     datas=[],

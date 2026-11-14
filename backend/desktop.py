@@ -950,9 +950,9 @@ def run_reporting_06(
         os.environ.get(
             "SEGYR_SAMPLE_PROJECT",
             str(
-                PROJECT_ROOT.parent
-                / "web-power-balance-05"
-                / "qualification-projects"
+                PROJECT_ROOT
+                / "packaging"
+                / "sample_projects"
                 / "web05-native-qualification.segyrcalc-web.json"
             ),
         )
