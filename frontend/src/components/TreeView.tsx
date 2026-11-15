@@ -29,6 +29,15 @@ function filterNodes(nodes: TreeNode[], query: string): TreeNode[] {
   return nodes.map(visit).filter((item): item is TreeNode => Boolean(item));
 }
 
+function nodeSelection(node: TreeNode): Selection | null {
+  if (node.selection) return node.selection;
+  if (node.selectable === false) return null;
+  if (node.kind === "project" || node.kind === "board" || node.kind === "feeder" || node.kind === "load") {
+    return { kind: node.kind, id: node.id };
+  }
+  return null;
+}
+
 export function TreeView({
   nodes,
   selection,
@@ -64,10 +73,38 @@ export function TreeView({
     items.map((node) => {
       const isBranch = Boolean(node.children?.length);
       const isOpen = search.trim() ? true : expanded.has(node.id);
-      const active = selection?.id === node.id;
+      const entitySelection = nodeSelection(node);
+      const active = Boolean(
+        entitySelection
+        && selection
+        && selection.kind === entitySelection.kind
+        && selection.id === entitySelection.id
+      );
+      const rowClass = `tree-row ${active ? "is-active" : ""} ${entitySelection ? "" : "is-static"}`;
+      const rowContent = (
+        <>
+          <span className={`tree-icon tree-icon-${node.kind}`}>
+            <Icon
+              name={node.kind === "project" || node.kind === "unassigned-group" ? "projects" : node.kind === "board" ? "tree" : node.kind === "feeder" ? "bolt" : "file"}
+              size={13}
+            />
+          </span>
+          <span className="tree-copy">
+            <strong>{node.label}</strong>
+            <small>{node.meta}</small>
+          </span>
+          {node.kind !== "empty" && <span className={`dot dot-${statusTone(node.status)}`} title={node.status} />}
+        </>
+      );
       return (
-        <li key={`${node.kind}-${node.id}`} role="treeitem" aria-expanded={isBranch ? isOpen : undefined}>
-          <div className={`tree-row ${active ? "is-active" : ""}`} style={{ paddingLeft: 6 + depth * 15 }}>
+        <li
+          key={`${node.kind}-${node.id}`}
+          role="treeitem"
+          aria-expanded={isBranch ? isOpen : undefined}
+          aria-selected={active}
+          aria-disabled={entitySelection ? undefined : true}
+        >
+          <div className={rowClass} style={{ paddingLeft: 6 + depth * 15 }}>
             {isBranch ? (
               <button
                 type="button"
@@ -80,24 +117,24 @@ export function TreeView({
             ) : (
               <span className="tree-toggle tree-toggle-spacer" />
             )}
-            <button
-              type="button"
-              className="tree-node"
-              onClick={() => onSelect({ kind: node.kind, id: node.id } as Selection)}
-              data-testid={`tree-${node.kind}-${node.id}`}
-            >
-              <span className={`tree-icon tree-icon-${node.kind}`}>
-                <Icon
-                  name={node.kind === "project" ? "projects" : node.kind === "board" ? "tree" : node.kind === "feeder" ? "bolt" : "file"}
-                  size={13}
-                />
-              </span>
-              <span className="tree-copy">
-                <strong>{node.label}</strong>
-                <small>{node.meta}</small>
-              </span>
-              <span className={`dot dot-${statusTone(node.status)}`} title={node.status} />
-            </button>
+            {entitySelection ? (
+              <button
+                type="button"
+                className="tree-node"
+                onClick={() => onSelect(entitySelection)}
+                aria-current={active ? "true" : undefined}
+                data-testid={`tree-${node.kind}-${node.id}`}
+              >
+                {rowContent}
+              </button>
+            ) : (
+              <div
+                className="tree-node tree-node-static"
+                data-testid={`tree-${node.kind}-${node.id}`}
+              >
+                {rowContent}
+              </div>
+            )}
           </div>
           {isBranch && isOpen && (
             <ul role="group" className="tree-children">

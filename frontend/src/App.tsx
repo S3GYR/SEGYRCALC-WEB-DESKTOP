@@ -1,6 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { loadCurrentProject, redoProject, saveProject, undoProject, updateFeeder, updateLoad } from "./api";
 import { AppShell } from "./components/AppShell";
+import { loadById } from "./data/hierarchy";
 import { ErrorState } from "./components/ErrorState";
 import { LoadingState } from "./components/LoadingState";
 import { Sidebar } from "./components/Sidebar";
@@ -112,7 +113,7 @@ function App() {
       setSelection((current) => {
         const exists = next.boards.some((board) => current?.kind === "board" && board.id === current.id)
           || next.feeders.some((feeder) => current?.kind === "feeder" && feeder.id === current.id)
-          || next.loads.some((load) => current?.kind === "load" && load.id === current.id);
+          || (current?.kind === "load" && Boolean(loadById(next, current.id)));
         return exists ? current : rootSelection(next);
       });
     } else {
@@ -179,9 +180,13 @@ function App() {
   };
 
   const editDesignation = async (id: string, value: string) => {
-    const loadItem = project?.loads.find((item) => item.id === id);
+    const loadItem = project ? loadById(project, id) : null;
     const clean = value.trim();
     if (!project || !loadItem || !clean || clean === loadItem.designation) return;
+    if (!loadItem.feeder_id || loadItem.feeder_id.trim() === "") {
+      showToast("Un récepteur non affecté doit d'abord être rattaché à un départ.", "error");
+      return;
+    }
     try {
       const updated = await updateLoad(id, {
         feeder_id: loadItem.feeder_id,

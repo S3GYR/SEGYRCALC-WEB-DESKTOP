@@ -160,7 +160,8 @@ export function PropertyContent({
     );
   }
 
-  const load = project.loads.find((item) => item.id === selection.id);
+  const load = project.loads.find((item) => item.id === selection.id)
+    ?? project.unassigned_loads?.find((item) => item.id === selection.id);
   if (!load) return <PropertyPanel testId="property-panel" />;
   const feeder = project.feeders.find((item) => item.id === load.feeder_id);
   const editedName = temporaryEdits[load.id]?.designation;

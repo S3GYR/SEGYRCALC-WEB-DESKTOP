@@ -297,6 +297,12 @@ export type ProjectPayload = {
   boards: BoardSummary[];
   feeders: FeederSummary[];
   loads: LoadSummary[];
+  /**
+   * Additive, optional read-model field. The current backend does not yet
+   * emit it; when present it lets the tree/graph expose full unassigned
+   * receiver properties instead of inventing placeholder records.
+   */
+  unassigned_loads?: LoadSummary[];
   diagnostics: Diagnostic[];
   assumptions: string[];
   coherence: CoherenceReport;
@@ -573,11 +579,17 @@ export type ReportExportResult = {
 
 export type TemporaryEdits = Record<string, { designation?: string }>;
 
+export type TreeNodeKind = "project" | "board" | "feeder" | "load" | "unassigned-group" | "empty";
+
 export type TreeNode = {
   id: string;
-  kind: "project" | "board" | "feeder" | "load";
+  kind: TreeNodeKind;
   label: string;
   meta: string;
   status: string;
   children?: TreeNode[];
+  /** Selection métier explicite. Absent pour les nœuds de présentation. */
+  selection?: Selection;
+  /** false pour un état vide de présentation, jamais pour un équipement métier. */
+  selectable?: boolean;
 };

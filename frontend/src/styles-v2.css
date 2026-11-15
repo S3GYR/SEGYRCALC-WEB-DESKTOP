@@ -317,6 +317,9 @@
 .tree-toggle-spacer { display: block; }
 .tree-node { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; padding: 3px 4px 3px 0; border: 0; background: transparent; text-align: left; cursor: pointer; }
 .tree-node:hover { background: color-mix(in srgb, var(--bg) 70%, transparent); border-radius: 5px; }
+.tree-node-static { cursor: default; opacity: 0.72; }
+.tree-node-static:hover { background: transparent; }
+.tree-row.is-static .tree-icon { opacity: 0.75; }
 .tree-row.is-active .tree-node { background: transparent; }
 .tree-icon { display: grid; place-items: center; width: 20px; height: 20px; flex: 0 0 auto; border-radius: 5px; background: var(--bg-deep); color: var(--muted); }
 .tree-icon-project { background: var(--red-soft); color: var(--red); }

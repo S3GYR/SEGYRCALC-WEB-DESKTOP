@@ -22,6 +22,51 @@ from .engine_adapter import (
 )
 
 
+def _unassigned_load_payload(assignment: Any) -> dict[str, Any]:
+    """Map a real unassigned receiver without inventing a feeder or result.
+
+    The receiver exists in ProjectV11 but has no feeder. Its input data is
+    exposed; electrical results that require a feeder/Ks remain unavailable.
+    """
+    entry = assignment.entry
+    load = entry.load
+    return {
+        "id": str(load.load_id),
+        "designation": str(load.designation),
+        "network": _enum_text(load.network),
+        "voltage_v": _text(load.voltage_v),
+        "nominal_power": _text(load.nominal_power),
+        "power_unit": _enum_text(load.power_unit),
+        "quantity": int(load.quantity),
+        "installed_power_w": _text(load.installed_power_w),
+        "power_factor": _text(load.power_factor),
+        "ku": _text(entry.ku_value),
+        "ks": None,
+        "feeder_id": "",
+        "parent_board_id": "",
+        "phase": _enum_text(assignment.phase),
+        "p_after_ku_w": None,
+        "q_after_ku_var": None,
+        "p_after_ks_w": None,
+        "q_after_ks_var": None,
+        "s_after_ks_va": None,
+        "current_a": None,
+        "current_real_a": None,
+        "current_imag_a": None,
+        "current_available": False,
+        "apparent_power_available": False,
+        "status": "NON_AFFECTE",
+        "diagnostics": [
+            {
+                "code": "RECEPTEUR_NON_AFFECTE",
+                "severity": "warning",
+                "message": "Récepteur non affecté à un départ ; aucun résultat de bilan n'est appliqué.",
+                "field": "feeder_id",
+            }
+        ],
+    }
+
+
 def build_project_payload(
     project: Any,
     result: Any | None,
@@ -34,6 +79,7 @@ def build_project_payload(
 ) -> dict[str, Any]:
     feeder_map = {feeder.feeder_id: feeder for feeder in project.feeders}
     load_payloads: list[dict[str, Any]] = []
+    unassigned_load_payloads: list[dict[str, Any]] = []
     boards: list[dict[str, Any]] = []
     feeders: list[dict[str, Any]] = []
 
@@ -63,6 +109,11 @@ def build_project_payload(
     for assignment in project.loads:
         feeder = feeder_map.get(assignment.feeder_id)
         if feeder is None:
+            if assignment.feeder_id is None or not str(assignment.feeder_id).strip():
+                unassigned_load_payloads.append(_unassigned_load_payload(assignment))
+            # A non-null but missing feeder is rejected by ProjectV11. If such
+            # an invalid object reaches this mapper, it is not silently
+            # reclassified as a valid unassigned receiver.
             continue
         load_payloads.append(
             _load_payload(
@@ -134,7 +185,7 @@ def build_project_payload(
     )
     calculation_current = state.get("calculation_revision") == state.get("revision")
     count_checks = [
-        len(project.loads) == len(load_payloads),
+        len(project.loads) == len(load_payloads) + len(unassigned_load_payloads),
         len(project.boards) == len(boards),
         len(project.feeders) == len(feeders),
     ]
@@ -161,7 +212,7 @@ def build_project_payload(
             "label": "Cohérence des projections",
             "status": "PASS" if all(count_checks) else "FAIL",
             "detail": (
-                f"récepteurs={len(load_payloads)}/{len(project.loads)} · "
+                f"récepteurs={len(load_payloads) + len(unassigned_load_payloads)}/{len(project.loads)} · "
                 f"tableaux={len(boards)}/{len(project.boards)} · "
                 f"départs={len(feeders)}/{len(project.feeders)}"
             ),
@@ -210,7 +261,7 @@ def build_project_payload(
             "load_count": len(project.loads),
             "board_count": len(project.boards),
             "feeder_count": len(project.feeders),
-            "unassigned_load_count": len(result.unassigned_load_ids) if result is not None else 0,
+            "unassigned_load_count": len(unassigned_load_payloads),
         },
         "engine": {
             "source": "SEGYRCALC V1.5 worktree · read-only",
@@ -228,6 +279,7 @@ def build_project_payload(
         "boards": boards,
         "feeders": feeders,
         "loads": load_payloads,
+        "unassigned_loads": unassigned_load_payloads,
         "diagnostics": diagnostics,
         "assumptions": list(ASSUMPTIONS),
         "coherence": {

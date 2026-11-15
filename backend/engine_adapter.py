@@ -423,6 +423,9 @@ def load_project_payload() -> dict[str, Any]:
         "boards": [_board_payload(item) for item in result.board_results],
         "feeders": [_feeder_payload(item) for item in result.feeder_results],
         "loads": load_payloads,
+        # The reference fixture has no unassigned receiver. Keep the additive
+        # field present for consumers of this secondary fixture endpoint.
+        "unassigned_loads": [],
         "diagnostics": _diagnostics(result.diagnostics),
         "assumptions": list(ASSUMPTIONS),
     }

@@ -30,7 +30,7 @@ import { SummaryCard } from "../components/SummaryCard";
 import { Toolbar } from "../components/Toolbar";
 import { TreeView } from "../components/TreeView";
 import { allowedDistributionTypes } from "../data/distribution";
-import { buildElectricalTree } from "../data/hierarchy";
+import { buildElectricalTree, loadById } from "../data/hierarchy";
 import { Icon } from "../icons";
 import type {
   BoardSummary,
@@ -85,11 +85,14 @@ export function ArchitectureScreen({
   const [deleteTarget, setDeleteTarget] = useState<DeleteTarget>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const tree = useMemo(() => buildElectricalTree(project), [project]);
+  const tree = useMemo(
+    () => buildElectricalTree(project, project.unassigned_loads ?? []),
+    [project],
+  );
 
   const selectedBoard = selection?.kind === "board" ? project.boards.find((board) => board.id === selection.id) ?? null : null;
   const selectedFeeder = selection?.kind === "feeder" ? project.feeders.find((feeder) => feeder.id === selection.id) ?? null : null;
-  const selectedLoad = selection?.kind === "load" ? project.loads.find((load) => load.id === selection.id) ?? null : null;
+  const selectedLoad = selection?.kind === "load" ? loadById(project, selection.id) : null;
   const initial: BoardSummary | FeederSummary | LoadSummary | null = selectedBoard ?? selectedFeeder ?? selectedLoad;
   const selectedKind: EntityKind | null = selection?.kind === "board" || selection?.kind === "feeder" || selection?.kind === "load"
     ? selection.kind

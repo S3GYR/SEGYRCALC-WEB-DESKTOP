@@ -99,7 +99,10 @@ export function PowerBalanceScreen({
   const [sort, setSort] = useState<SortState | null>({ key: "designation", direction: "asc" });
   const [treeWidth, setTreeWidth] = useState(235);
   const [propertyWidth, setPropertyWidth] = useState(290);
-  const tree = useMemo(() => buildElectricalTree(project), [project]);
+  const tree = useMemo(
+    () => buildElectricalTree(project, project.unassigned_loads ?? []),
+    [project],
+  );
   const board = project.boards.find((item) => item.id === boardFilter) ?? null;
   const statuses = useMemo(() => filterOptions(project), [project]);
 
