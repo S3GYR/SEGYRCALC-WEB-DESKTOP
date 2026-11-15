@@ -1,5 +1,5 @@
 #define MyAppName "SEGYRCALC"
-#define MyAppVersion "0.7.1"
+#define MyAppVersion "0.8.0-r6.2"
 #define MyAppPublisher "SEGYR Technologies"
 #define MyAppExeName "SEGYRCALC.exe"
 #define MyAppId "{{C4D8A2F1-6B3E-49A7-8F2C-5D1E7B9A3C62}"
@@ -25,11 +25,11 @@ WizardStyle=modern
 SetupLogging=yes
 CloseApplications=yes
 RestartApplications=no
-VersionInfoVersion=0.7.1.0
+VersionInfoVersion=0.8.0.2
 VersionInfoCompany=SEGYR Technologies
 VersionInfoDescription=SEGYRCALC WEB-07 DIAGNOSTIC qualification candidate
 VersionInfoProductName=SEGYRCALC
-VersionInfoProductVersion=0.7.1
+VersionInfoProductVersion=0.8.0-r6.2
 
 [Languages]
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"

@@ -321,7 +321,7 @@ def _store_response(operation):
         )
     except Exception as exc:
         return JSONResponse(
-            {"detail": f"OpÃƒÂ©ration projet impossible: {exc}", "code": "PROJET_OPERATION_ECHEC"},
+            {"detail": f"Opération projet impossible: {exc}", "code": "PROJET_OPERATION_ECHEC"},
             status_code=422,
         )
 
@@ -657,7 +657,7 @@ def create_app(
             return _adapter().calculate_power_payload(payload.model_dump())
         except Exception as exc:
             return JSONResponse(
-                {"detail": f"EntrÃƒÂ©e ou moteur indisponible : {exc}"},
+                {"detail": f"Entrée ou moteur indisponible : {exc}"},
                 status_code=422,
             )
 

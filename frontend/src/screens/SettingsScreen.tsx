@@ -26,7 +26,7 @@ export function SettingsScreen({
         eyebrow="Paramètres"
         title="Environnement de qualification"
         description="Configuration locale, identité et contrôles du prototype. Aucune préférence persistante n’est écrite dans un fichier projet."
-        badge={<span className="outline-badge">WEB-07 · v0.7.1</span>}
+        badge={<span className="outline-badge">WEB-08 · 0.8.0-r6.2</span>}
       />
       <CompanyPanel />
       <section className="summary-grid summary-grid-compact">

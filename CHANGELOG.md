@@ -1,5 +1,17 @@
 # Changelog — SEGYRCALC Web Desktop
 
+## [0.8.0-r6.2] — 2026-11-15
+
+### Stabilisation
+
+- correction des messages backend doublement encodés ;
+- restauration des accents dans les messages projet et source ;
+- alignement des métadonnées de version sur 0.8.0-r6.2 ;
+- ajout de tests de non-régression encodage et versions.
+
+Aucune modification du moteur, du format projet, du schéma SQLite ou des
+contrats API métier.
+
 ## [0.8.0-r6.1] — 2026-11-14
 
 ### Baseline Git

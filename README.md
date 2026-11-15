@@ -6,13 +6,13 @@ basée sur les moteurs historiques SEGYRCALC V1.4/V1.5 en lecture seule.
 ## Version de référence
 
 ```text
-Baseline : R6.1
-Version  : 0.8.0-r6.1
-Date     : 2026-11-14
+Baseline : R6.2
+Version  : 0.8.0-r6.2
+Date     : 2026-11-15
 ```
 
-R6.1 est une version de qualification isolée. Elle n'est ni une version de
-production, ni une validation Windows 11 officielle.
+R6.2 est une version candidate de qualification isolée. Elle n'est ni une
+version de production, ni une validation Windows 11 officielle.
 
 ## Architecture
 

@@ -1,7 +1,7 @@
 {
   "name": "segyrcalc-web-windows-packaging-07",
   "private": true,
-  "version": "0.7.1",
+  "version": "0.8.0-r6.2",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -415,9 +415,9 @@ class CommandProjectStore(ProjectStore):
     def update_source(self, payload: dict[str, Any]) -> dict[str, Any]:
         base: Any = super()
         label = (
-            "Suppression de la source ?lectrique"
+            "Suppression de la source électrique"
             if payload.get("source") is None
-            else "Modification de la source ?lectrique"
+            else "Modification de la source électrique"
         )
         return self._wrap(
             label,

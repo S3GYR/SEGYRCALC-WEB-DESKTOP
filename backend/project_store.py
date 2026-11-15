@@ -277,7 +277,7 @@ def _feeder_references_from_payload(
     if not isinstance(value, dict):
         raise ProjectStoreError(
             "REPERES_DEPARTS_INVALIDES",
-            "Le registre des rep?res de d?parts est invalide.",
+            "Le registre des repères de départs est invalide.",
         )
     feeder_ids = set(project.electrical.feeder_map())
     references: dict[str, str] = {}
@@ -285,7 +285,7 @@ def _feeder_references_from_payload(
         if not isinstance(feeder_id, str) or not isinstance(raw_reference, str):
             raise ProjectStoreError(
                 "REPERES_DEPARTS_INVALIDES",
-                "Le registre des rep?res de d?parts est invalide.",
+                "Le registre des repères de départs est invalide.",
             )
         if feeder_id not in feeder_ids:
             continue
@@ -559,7 +559,7 @@ class ProjectStore:
             except Exception as exc:
                 raise ProjectStoreError(
                     "SOURCE_INVALIDE",
-                    f"La source ?lectrique est invalide: {exc}",
+                    f"La source électrique est invalide: {exc}",
                     422,
                 ) from exc
             self.project = replace(project, source=source)
