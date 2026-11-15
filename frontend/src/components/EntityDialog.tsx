@@ -207,15 +207,15 @@ export function EntityDialog({
           )
         )}
         {monoFeeder && mode === "create" && (
-          <p className="form-note wide-field">Phase et tension héritées du départ monophas?. La phase ne peut pas ?tre choisie librement à la création.</p>
+          <p className="form-note wide-field">Phase et tension héritées du départ monophasé. La phase ne peut pas ?tre choisie librement à la création.</p>
         )}
         {monoFeeder && mode === "edit" && (
-          <p className="form-note wide-field" data-testid="load-phase-sync-note">Modifier cette phase déplacera le départ monophas? et tous ses récepteurs, en une seule opération atomique.</p>
+          <p className="form-note wide-field" data-testid="load-phase-sync-note">Modifier cette phase déplacera le départ monophasé et tous ses récepteurs, en une seule opération atomique.</p>
         )}
         {form.network === "TRI" && selectedFeeder?.network === "TRI" && selectedFeeder.has_neutral === false && (
           <p className="form-note wide-field">Ce départ triphasé ne possède pas de neutre : les récepteurs monophasés phase-neutre sont refusés.</p>
         )}
-        {form.network === "TRI" && <p className="form-note wide-field">Un r?cepteur triphasé ne porte pas de phase unique.</p>}
+        {form.network === "TRI" && <p className="form-note wide-field">Un récepteur triphasé ne porte pas de phase unique.</p>}
       </div>
     );
   };

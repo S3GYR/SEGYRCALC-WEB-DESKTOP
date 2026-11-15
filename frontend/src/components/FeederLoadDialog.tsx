@@ -253,14 +253,14 @@ export function FeederLoadDialog({
         </label>
         {form.distribution_type === "TRI_N" && (
           <label>
-            <span>R?seau du r?cepteur</span>
+            <span>Réseau du récepteur</span>
             <select
               value={form.load_network}
               onChange={(event) => selectLoadNetwork(event.target.value as LoadNetwork)}
               data-testid="feeder-load-network"
             >
-              <option value="TRI">Triphas?</option>
-              <option value="MONO" disabled={!loadMonoAllowed}>Monophas?</option>
+              <option value="TRI">Triphasé</option>
+              <option value="MONO" disabled={!loadMonoAllowed}>Monophasé</option>
             </select>
           </label>
         )}

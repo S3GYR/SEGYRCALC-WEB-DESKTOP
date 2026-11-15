@@ -2109,3 +2109,136 @@ code {
 .boot-fallback { display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: center; min-height: 100vh; padding: 24px; color: #13263e; background: #f2f5f8; font: 13px 'Noto Sans', sans-serif; text-align: center; }
 .boot-fallback-error { color: #b52432; }
 
+
+/* About SEGYRCALC */
+.about-screen .about-hero {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+}
+.about-logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  background: var(--surface-2, var(--surface));
+  border: 1px solid var(--border);
+}
+.about-hero-copy h2 {
+  margin: 0 0 6px;
+  color: var(--text);
+}
+.about-hero-copy p {
+  margin: 0 0 8px;
+  color: var(--text-soft);
+}
+.about-publisher {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.about-info-list {
+  margin-top: 12px;
+}
+.about-info-list dd a {
+  color: var(--red);
+  text-decoration: none;
+}
+.about-info-list dd a:hover {
+  text-decoration: underline;
+}
+.about-copy-status {
+  margin: 12px 0 0;
+  color: var(--ok, #1b7f4a);
+  font-size: 12px;
+  font-weight: 600;
+}
+.about-footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+@media (max-width: 640px) {
+  .about-screen .about-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .about-logo {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+
+/* About finishing: footer and technical details */
+.about-footer {
+  margin: 2px 2px 0;
+  padding: 4px 0 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.about-footer p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.about-info-list dd.about-engine-function {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+  flex-wrap: wrap;
+  text-align: right;
+}
+.about-engine-function code {
+  font-family: "Cascadia Mono", "Consolas", "SFMono-Regular", monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  text-align: left;
+  padding: 2px 0;
+}
+.about-inline-copy {
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--red);
+  font: inherit;
+  font-size: 11px;
+  line-height: 1.4;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+.about-inline-copy:hover {
+  border-color: var(--red);
+}
+.about-inline-copy:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+.about-copy-error {
+  margin: 12px 0 0;
+  color: var(--danger, #b52432);
+  font-size: 12px;
+  font-weight: 600;
+}
+@media (max-width: 760px) {
+  .about-info-list dd.about-engine-function {
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .about-engine-function code {
+    text-align: left;
+  }
+}

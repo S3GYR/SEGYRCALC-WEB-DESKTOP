@@ -7,6 +7,7 @@ export type Screen =
   | "library"
   | "reports"
   | "settings"
+  | "about"
   | "engine"
   | "performance";
 

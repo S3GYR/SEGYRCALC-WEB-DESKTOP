@@ -92,6 +92,11 @@ export function SettingsScreen({
               <span><strong>Performance UI</strong><small>15, 100, 500 et 1 000 lignes</small></span>
               <Icon name="chevron" size={15} />
             </button>
+            <button type="button" className="quick-item" onClick={() => onNavigate("about")} data-testid="settings-about">
+              <span className="quick-icon"><Icon name="settings" /></span>
+              <span><strong>À propos de SEGYRCALC</strong><small>Versions, éditeur et informations techniques</small></span>
+              <Icon name="chevron" size={15} />
+            </button>
           </div>
         </section>
       </div>

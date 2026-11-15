@@ -6,6 +6,7 @@ import { LoadingState } from "./components/LoadingState";
 import { Sidebar } from "./components/Sidebar";
 import { Toast } from "./components/Toast";
 import { Topbar } from "./components/Topbar";
+import { AboutScreen } from "./screens/AboutScreen";
 import { ArchitectureScreen } from "./screens/ArchitectureScreen";
 import { ClientsScreen } from "./screens/ClientsScreen";
 import { DashboardScreen } from "./screens/DashboardScreen";
@@ -20,7 +21,7 @@ import type { ProjectPayload, Screen, Selection } from "./types";
 
 const allowedScreens: Screen[] = [
   "dashboard", "projects", "clients", "architecture", "balance", "library",
-  "reports", "settings", "engine", "performance",
+  "reports", "settings", "about", "engine", "performance",
 ];
 
 const labels: Record<Screen, string> = {
@@ -32,6 +33,7 @@ const labels: Record<Screen, string> = {
   library: "Bibliothèque",
   reports: "Rapports",
   settings: "Paramètres",
+  about: "À propos",
   engine: "Qualification moteur",
   performance: "Performance UI",
 };
@@ -280,7 +282,9 @@ function App() {
   if (!project) {
     const noProjectContent = screen === "settings"
       ? <SettingsScreen project={null} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} onNavigate={navigate} modifiedCount={0} onReset={() => undefined} />
-      : screen === "clients"
+      : screen === "about"
+        ? <AboutScreen engineVersion="1.3.0" engineFacade="calcelect.service_v13.calculate_project_v13" />
+        : screen === "clients"
         ? <ClientsScreen onToast={showToast} />
         : screen === "engine"
           ? <EngineScreen />
@@ -338,6 +342,12 @@ function App() {
             onNavigate={navigate}
             modifiedCount={project.state.dirty ? 1 : 0}
             onReset={() => navigate("projects")}
+          />
+        )}
+        {screen === "about" && (
+          <AboutScreen
+            engineVersion={project.engine.version}
+            engineFacade={project.engine.facade}
           />
         )}
         {screen === "engine" && <EngineScreen />}
