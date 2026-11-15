@@ -6,6 +6,8 @@ import type {
   DeletionPreview,
   PowerPayload,
   PowerRequest,
+  ProjectCatalogQuery,
+  ProjectCatalogResponse,
   ProjectFileList,
   ProjectPayload,
   SourcePayload,
@@ -304,6 +306,27 @@ export function updateGeneralInfo(
 
 export function listProjectFiles(): Promise<ProjectFileList> {
   return request<ProjectFileList>("/api/project/files");
+}
+
+export function listProjectCatalog(query: ProjectCatalogQuery = {}): Promise<ProjectCatalogResponse> {
+  const params = new URLSearchParams();
+  if (query.q?.trim()) params.set("q", query.q.trim());
+  if (query.client_id) params.set("client_id", query.client_id);
+  if (query.progress) params.set("progress", query.progress);
+  if (query.date_field) params.set("date_field", query.date_field);
+  if (query.date_from) params.set("date_from", query.date_from);
+  if (query.date_to) params.set("date_to", query.date_to);
+  if (query.sort) params.set("sort", query.sort);
+  if (query.page) params.set("page", String(query.page));
+  if (query.page_size) params.set("page_size", String(query.page_size));
+  const suffix = params.toString();
+  return request<ProjectCatalogResponse>(`/api/projects${suffix ? `?${suffix}` : ""}`);
+}
+
+export function openCatalogProject(catalogId: string): Promise<ProjectPayload> {
+  return request<ProjectPayload>(`/api/projects/${encodeURIComponent(catalogId)}/open`, {
+    method: "POST",
+  });
 }
 
 export function addBoard(payload: Record<string, unknown>, expectedRevision: number): Promise<ProjectPayload> {

@@ -1227,7 +1227,7 @@ class ProjectStore:
                             "client_name": client_name,
                         }
                     )
-        return files[:50]
+        return files
 
     def _resolve_read_path(self, path: Path) -> Path:
         resolved = path.expanduser().resolve()

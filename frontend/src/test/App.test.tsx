@@ -11,7 +11,16 @@ vi.mock("../api", () => ({
   updateFeeder: vi.fn(async () => project),
   undoProject: vi.fn(async () => project),
   redoProject: vi.fn(async () => project),
-  listProjectFiles: vi.fn(async () => ({ files: [], root: "C:\\Users\\Qualification\\AppData\\Local\\SEGYR Technologies\\SEGYRCALC\\Projects" })),
+  listProjectCatalog: vi.fn(async () => ({
+    items: [],
+    page: 1,
+    page_size: 25,
+    total: 0,
+    total_pages: 0,
+    has_next: false,
+    has_previous: false,
+  })),
+  openCatalogProject: vi.fn(),
   listClients: vi.fn(async () => ({ clients: [] })),
   getCompany: vi.fn(async () => ({
     configured: false,

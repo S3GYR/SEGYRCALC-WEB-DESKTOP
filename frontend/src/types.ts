@@ -334,6 +334,55 @@ export type ProjectFile = {
   client_name?: string;
 };
 
+export type ProjectProgress = "NOT_DEFINED" | "IN_PROGRESS" | "COMPLETED";
+
+export type ProjectCatalogItem = {
+  catalog_id: string;
+  project_id: string | null;
+  name: string;
+  reference: string;
+  client_id: string | null;
+  client_name: string;
+  description: string;
+  progress: ProjectProgress;
+  created_at: string | null;
+  updated_at: string | null;
+  file_modified: string;
+  format: string;
+  writable: boolean;
+  metadata_error: string | null;
+};
+
+export type ProjectCatalogResponse = {
+  items: ProjectCatalogItem[];
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+  has_next: boolean;
+  has_previous: boolean;
+};
+
+export type ProjectCatalogQuery = {
+  q?: string;
+  client_id?: string | null;
+  progress?: ProjectProgress | null;
+  date_field?: "created" | "updated";
+  date_from?: string;
+  date_to?: string;
+  sort?:
+    | "name_asc"
+    | "name_desc"
+    | "updated_desc"
+    | "updated_asc"
+    | "created_desc"
+    | "created_asc"
+    | "client_asc"
+    | "client_desc";
+  page?: number;
+  page_size?: 25 | 50 | 100;
+};
+
 export type PowerRequest = {
   mode: "P_KNOWN" | "S_KNOWN";
   network: "MONO" | "TRI";

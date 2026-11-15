@@ -6,17 +6,18 @@ import json
 import secrets
 import threading
 from collections.abc import Callable
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Literal
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from .client_store import ClientStore, ClientStoreError
 from .company_store import CompanyStore, CompanyStoreError
+from .project_catalog import CatalogError, ProjectCatalog
 from .project_commands import CommandProjectStore
 from .project_store import ProjectStoreError
 from .reporting import ReportConfig, ReportService
@@ -766,6 +767,72 @@ def create_app(
     @app.get("/api/project/files", response_model=None)
     async def project_files() -> dict[str, object]:
         return {"files": store.list_files(), "root": str(store.root)}
+
+    @app.get("/api/projects", response_model=None)
+    async def projects_catalog(
+        q: str = Query(default="", max_length=200),
+        client_id: str | None = Query(default=None, max_length=64),
+        progress: Literal["NOT_DEFINED", "IN_PROGRESS", "COMPLETED"] | None = None,
+        date_field: Literal["created", "updated"] = "updated",
+        date_from: date | None = None,
+        date_to: date | None = None,
+        sort: Literal[
+            "name_asc",
+            "name_desc",
+            "updated_desc",
+            "updated_asc",
+            "created_desc",
+            "created_asc",
+            "client_asc",
+            "client_desc",
+        ] = "updated_desc",
+        page: int = Query(default=1, ge=1),
+        page_size: int = Query(default=25),
+    ) -> dict[str, object] | JSONResponse:
+        try:
+            catalog = ProjectCatalog(store.root, store.read_roots)
+            return catalog.query(
+                q=q,
+                client_id=client_id,
+                progress=progress,
+                date_field=date_field,
+                date_from=date_from,
+                date_to=date_to,
+                sort=sort,
+                page=page,
+                page_size=page_size,
+            )
+        except CatalogError as exc:
+            return JSONResponse(
+                {"detail": exc.message, "code": exc.code},
+                status_code=exc.status_code,
+            )
+        except Exception:
+            return JSONResponse(
+                {"detail": "Catalogue indisponible.", "code": "CATALOGUE_INDISPONIBLE"},
+                status_code=503,
+            )
+
+    @app.post("/api/projects/{catalog_id}/open", response_model=None)
+    async def projects_catalog_open(catalog_id: str) -> dict[str, object] | JSONResponse:
+        try:
+            catalog = ProjectCatalog(store.root, store.read_roots)
+            return store.open(catalog.resolve(catalog_id))
+        except CatalogError as exc:
+            return JSONResponse(
+                {"detail": exc.message, "code": exc.code},
+                status_code=exc.status_code,
+            )
+        except ProjectStoreError as exc:
+            return JSONResponse(
+                {"detail": exc.message, "code": exc.code},
+                status_code=exc.status_code,
+            )
+        except Exception:
+            return JSONResponse(
+                {"detail": "Ouverture du projet impossible.", "code": "PROJET_OUVERTURE_ECHEC"},
+                status_code=422,
+            )
 
     @app.post("/api/project/boards", response_model=None)
     async def project_add_board(payload: BoardCreateRequest) -> dict[str, object] | JSONResponse:
