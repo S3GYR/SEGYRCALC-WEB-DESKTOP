@@ -19,13 +19,16 @@ def _bundle_root() -> Path:
 def _configure_runtime() -> Path:
     bundle = _bundle_root()
     local_appdata = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    data_root = Path(
-        os.environ.get("SEGYR_USER_DATA_ROOT")
-        or (Path(local_appdata) / "SEGYR Technologies" / "SEGYRCALC")
+    # The recipe build never reads production SEGYR_* root variables.
+    recipe_override = os.environ.get("SEGYR_RECETTE_DATA_ROOT")
+    data_root = (
+        Path(recipe_override)
+        if recipe_override
+        else Path(local_appdata) / "SEGYR Technologies" / "SEGYRCALC-RECETTE"
     )
-    projects_root = Path(os.environ.get("SEGYR_PROJECTS_ROOT") or (data_root / "Projects"))
-    exports_root = Path(os.environ.get("SEGYR_EXPORTS_ROOT") or (data_root / "Exports"))
-    logs_root = Path(os.environ.get("SEGYR_LOGS_ROOT") or (data_root / "Logs"))
+    projects_root = data_root / "Projects"
+    exports_root = data_root / "Exports"
+    logs_root = data_root / "Logs"
     for path in (data_root, projects_root, exports_root, logs_root):
         path.mkdir(parents=True, exist_ok=True)
 

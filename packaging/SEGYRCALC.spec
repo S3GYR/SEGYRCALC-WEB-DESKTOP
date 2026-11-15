@@ -1,11 +1,18 @@
 ﻿# -*- mode: python ; coding: utf-8 -*-
+import os
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 ROOT = Path(SPECPATH).resolve().parents[0]
-ENGINE = ROOT.parent.parent / "SEGYRCALC-V1.5-UI-ERGONOMIE-01" / "worktree"
+ENGINE = Path(os.environ.get("SEGYR_ENGINE_ROOT", ROOT.parent.parent / "SEGYRCALC-V1.5-UI-ERGONOMIE-01" / "worktree")).resolve()
 FIXTURE = ENGINE / "examples" / "recette-business-acceptance-v1.3.json"
+FRONTEND_DIST = Path(os.environ.get("SEGYR_FRONTEND_DIST", ROOT / "frontend" / "dist")).resolve()
+BUILD_METADATA = Path(os.environ.get("SEGYR_BUILD_METADATA", ROOT / "build-metadata.json")).resolve()
+if not (FRONTEND_DIST / "index.html").is_file():
+    raise SystemExit(f"Frontend dist introuvable: {FRONTEND_DIST}")
+if not BUILD_METADATA.is_file():
+    raise SystemExit(f"Metadonnees de build introuvables: {BUILD_METADATA}")
 
 hiddenimports = (
     collect_submodules("uvicorn")
@@ -43,7 +50,8 @@ hiddenimports = (
 )
 
 datas = [
-    (str(ROOT / "frontend" / "dist"), "frontend/dist"),
+    (str(FRONTEND_DIST), "frontend/dist"),
+    (str(BUILD_METADATA), "build_metadata"),
     (str(ROOT / "frontend" / "public" / "assets"), "frontend/public/assets"),
     (str(ENGINE / "src"), "engine_src"),
     (str(FIXTURE), "engine_fixtures"),
