@@ -8,6 +8,7 @@ import json
 import os
 import secrets
 import shutil
+import sys
 import threading
 import time
 from ctypes import wintypes
@@ -24,6 +25,31 @@ from .reporting import EXPORT_ROOT
 TITLE = "SEGYRCALC - Bilan de puissance"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ICON = PROJECT_ROOT / "frontend" / "public" / "assets" / "segyrcalc.ico"
+
+
+def _configure_console_encoding() -> None:
+    """Prefer UTF-8 for CLI diagnostics without breaking redirected output."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(encoding="utf-8", errors="strict")
+        except Exception:
+            pass
+
+
+def _print_json(payload: object, *, indent: int | None = None) -> None:
+    """Print JSON without raising on a non-UTF-8 Windows console.
+
+    The normal path preserves raw Unicode. If the active stream cannot encode
+    it, the standard ASCII-escaped JSON representation is used instead; the
+    data remains fully recoverable by a JSON decoder.
+    """
+    try:
+        print(json.dumps(payload, ensure_ascii=False, indent=indent))
+    except UnicodeEncodeError:
+        print(json.dumps(payload, ensure_ascii=True, indent=indent))
 
 
 class DialogAPI:
@@ -440,7 +466,7 @@ def run_project_cycle(
             .get("electrical", {})
             .get("project_id")
         )
-    print(json.dumps({"event": "project_cycle_checks", **checks}, ensure_ascii=False))
+    _print_json({"event": "project_cycle_checks", **checks})
     return captures, checks
 
 
@@ -1270,7 +1296,7 @@ def self_check() -> int:
             "power_status": power.status_code,
             "power": power.json(),
         }
-        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        _print_json(payload, indent=2)
         return (
             0
             if all(response.status_code == 200 for response in (health, info, project, power))
@@ -1281,6 +1307,7 @@ def self_check() -> int:
 
 
 def main() -> int:
+    _configure_console_encoding()
     parser = argparse.ArgumentParser(description="SEGYRCALC WEB-02 native shell")
     parser.add_argument(
         "--self-check", action="store_true", help="vérifie l'API sans ouvrir de fenêtre"

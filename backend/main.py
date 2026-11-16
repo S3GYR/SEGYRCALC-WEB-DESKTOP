@@ -461,7 +461,7 @@ def create_app(
         host = request.headers.get("host", "").lower()
         host_name = host.split(":")[0]
         if host_name not in allowed_hosts:
-            return JSONResponse({"detail": "Hote non autorise."}, status_code=400)
+            return JSONResponse({"detail": "Hôte non autorisé."}, status_code=400)
 
         path = request.url.path
         if path.startswith("/api/"):

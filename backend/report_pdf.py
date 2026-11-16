@@ -39,6 +39,11 @@ ASSETS = PROJECT_ROOT / "frontend" / "public" / "assets"
 LOGO = ASSETS / "segyrcalc-logo.png"
 FONT_REGULAR = ASSETS / "fonts" / "NotoSans-Regular.ttf"
 FONT_BOLD = ASSETS / "fonts" / "NotoSans-Bold.ttf"
+FONT_FALLBACK_REGULAR = ASSETS / "fonts" / "Vera.ttf"
+FONT_FALLBACK_BOLD = ASSETS / "fonts" / "VeraBd.ttf"
+_FALLBACK_REGULAR = "SegyrcFallback"
+_FALLBACK_BOLD = "SegyrcFallbackBold"
+_FONT_CMAPS: dict[str, dict[int, int]] = {}
 NAVY = colors.HexColor("#13263E")
 RED = colors.HexColor("#B52432")
 LIGHT = colors.HexColor("#F2F5F8")
@@ -58,12 +63,125 @@ def _register_fonts() -> tuple[str, str]:
             bold = "SegyrcBold"
         except Exception:
             pass
+    for name, path in (
+        (_FALLBACK_REGULAR, FONT_FALLBACK_REGULAR),
+        (_FALLBACK_BOLD, FONT_FALLBACK_BOLD),
+    ):
+        if not path.is_file():
+            continue
+        try:
+            pdfmetrics.registerFont(TTFont(name, str(path)))
+            _FONT_CMAPS[name] = pdfmetrics.getFont(name).face.charToGlyph
+        except Exception:
+            continue
     return regular, bold
 
 
-def _xml(value: object) -> str:
+def _font_cmap(name: str) -> dict[int, int]:
+    if name in _FONT_CMAPS:
+        return _FONT_CMAPS[name]
+    try:
+        face = getattr(pdfmetrics.getFont(name), "face", None)
+        cmap = getattr(face, "charToGlyph", None)
+        if cmap:
+            _FONT_CMAPS[name] = cmap
+            return cmap
+    except Exception:
+        pass
+    return {}
+
+
+def _escape(value: object) -> str:
     text = "" if value is None else str(value)
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def _xml(value: object) -> str:
+    return _escape(value)
+
+
+def _markup(value: object, primary: str, fallback: str) -> str:
+    """Escape text and mark glyphs absent from the primary PDF font.
+
+    ReportLab does not fall back between fonts. Wrapping only the missing
+    glyphs in an inline ``font`` tag lets the PDF use the bundled Vera font for
+    mathematical symbols while keeping Noto Sans for the rest of the text.
+    """
+    text = "" if value is None else str(value)
+    primary_cmap = _font_cmap(primary)
+    fallback_cmap = _font_cmap(fallback)
+    if not primary_cmap or not fallback_cmap:
+        return _escape(text)
+
+    parts: list[str] = []
+    run: list[str] = []
+    in_fallback = False
+
+    def flush() -> None:
+        nonlocal run
+        if not run:
+            return
+        escaped = "".join(_escape(ch) for ch in run)
+        if in_fallback:
+            parts.append(f'<font name="{fallback}">{escaped}</font>')
+        else:
+            parts.append(escaped)
+        run = []
+
+    for char in text:
+        needs_fallback = ord(char) not in primary_cmap and ord(char) in fallback_cmap
+        if needs_fallback != in_fallback:
+            flush()
+            in_fallback = needs_fallback
+        run.append(char)
+    flush()
+    return "".join(parts)
+
+
+def _text_runs(text: object, primary: str, fallback: str) -> list[tuple[str, str]]:
+    value = "" if text is None else str(text)
+    primary_cmap = _font_cmap(primary)
+    fallback_cmap = _font_cmap(fallback)
+    if not primary_cmap or not fallback_cmap:
+        return [(value, primary)]
+    runs: list[tuple[str, str]] = []
+    current: list[str] = []
+    current_font = primary
+    for char in value:
+        font = (
+            fallback
+            if ord(char) not in primary_cmap and ord(char) in fallback_cmap
+            else primary
+        )
+        if font != current_font:
+            if current:
+                runs.append(("".join(current), current_font))
+            current = []
+            current_font = font
+        current.append(char)
+    if current:
+        runs.append(("".join(current), current_font))
+    return runs
+
+
+def _draw_text(
+    canvas,
+    x: float,
+    y: float,
+    text: object,
+    font: str,
+    size: float,
+    fallback: str | None = None,
+    *,
+    align: str = "left",
+) -> None:
+    runs = _text_runs(text, font, fallback or font)
+    if align == "right":
+        x -= sum(pdfmetrics.stringWidth(value, run_font, size) for value, run_font in runs)
+    for value, run_font in runs:
+        canvas.setFont(run_font, size)
+        canvas.drawString(x, y, value)
+        x += pdfmetrics.stringWidth(value, run_font, size)
 
 
 def _value(value: object, available: bool = True) -> str:
@@ -206,6 +324,7 @@ def _styles() -> dict[str, ParagraphStyle]:
 
 
 def _header_footer(canvas, doc) -> None:
+    regular, _ = _register_fonts()
     canvas.saveState()
     width, height = doc.pagesize
     canvas.setFillColor(NAVY)
@@ -213,9 +332,17 @@ def _header_footer(canvas, doc) -> None:
     canvas.setFillColor(WHITE)
     canvas.setFont("Helvetica-Bold", 7.5)
     canvas.drawString(15 * mm, height - 8.5 * mm, "SEGYRCALC · Bilan de puissance électrique")
-    canvas.setFont("Helvetica", 6.5)
     project = getattr(doc, "_report_project", "")
-    canvas.drawRightString(width - 15 * mm, height - 8.5 * mm, project[:100])
+    _draw_text(
+        canvas,
+        width - 15 * mm,
+        height - 8.5 * mm,
+        project[:100],
+        regular,
+        6.5,
+        _FALLBACK_REGULAR,
+        align="right",
+    )
     canvas.setStrokeColor(RED)
     canvas.setLineWidth(0.8)
     canvas.line(15 * mm, 12 * mm, width - 15 * mm, 12 * mm)
@@ -239,7 +366,9 @@ def _cover_page(canvas, doc) -> None:
 
 
 def _p(text: object, style: ParagraphStyle, *, available: bool = True) -> Paragraph:
-    return Paragraph(_xml(_value(text, available)), style)
+    primary = str(style.fontName)
+    fallback = _FALLBACK_BOLD if "Bold" in primary else _FALLBACK_REGULAR
+    return Paragraph(_markup(_value(text, available), primary, fallback), style)
 
 
 def _table(
@@ -497,8 +626,8 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
                 story.append(Spacer(1, 8 * mm))
             except Exception:
                 pass
-        story.append(Paragraph(_xml(config.title), styles["title"]))
-        story.append(Paragraph("SEGYRCALC · Bilan de puissance électrique", styles["subtitle"]))
+        story.append(_p(config.title, styles["title"]))
+        story.append(_p("SEGYRCALC · Bilan de puissance électrique", styles["subtitle"]))
         story.append(Spacer(1, 12 * mm))
         cover_data = [
             [_p("Projet", styles["cover_label"]), _p(project.get("name"), styles["cover_value"])],
@@ -538,7 +667,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
         story.append(PageBreak())
 
     if "general" in config.sections:
-        story.append(Paragraph("1. Informations générales", styles["h1"]))
+        story.append(_p("1. Informations générales", styles["h1"]))
         general = [
             ["Information", "Valeur"],
             ["Nom du projet", project.get("name")],
@@ -553,7 +682,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
         story.append(_table(general, [48 * mm, 112 * mm], styles))
 
     if "summary" in config.sections:
-        story.append(Paragraph("2. Synthèse générale TGBT", styles["h1"]))
+        story.append(_p("2. Synthèse générale TGBT", styles["h1"]))
         story.append(
             _table(
                 _summary_rows(snapshot),
@@ -565,14 +694,14 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
         )
         story.append(Spacer(1, 3 * mm))
         story.append(
-            Paragraph(
+            _p(
                 "Les valeurs sont celles du moteur au moment du snapshot. Le cos φ global n'est pas exposé par le moteur.",
                 styles["body"],
             )
         )
 
     if "architecture" in config.sections:
-        story.append(Paragraph("3. Architecture électrique", styles["h1"]))
+        story.append(_p("3. Architecture électrique", styles["h1"]))
         arch = [
             ["Référence", "Désignation", "Type", "Réseau", "Tension (V)", "Départs", "Réc.", "État"]
         ]
@@ -601,7 +730,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
 
     story.append(CondPageBreak(45 * mm))
     if "boards" in config.sections:
-        story.append(Paragraph("4. Synthèses des tableaux divisionnaires", styles["h1"]))
+        story.append(_p("4. Synthèses des tableaux divisionnaires", styles["h1"]))
         data = [
             [
                 "Réf.",
@@ -641,7 +770,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
 
     story.append(CondPageBreak(45 * mm))
     if "feeders" in config.sections:
-        story.append(Paragraph("5. Bilan des départs", styles["h1"]))
+        story.append(_p("5. Bilan des départs", styles["h1"]))
         data = [
             [
                 "Réf.",
@@ -697,9 +826,9 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
 
     if "receivers" in config.sections:
         story.append(PageBreak())
-        story.append(Paragraph("6. Bilan détaillé des récepteurs", styles["h1"]))
+        story.append(_p("6. Bilan détaillé des récepteurs", styles["h1"]))
         story.append(
-            Paragraph(
+            _p(
                 "S/I individuels issus des contributions moteur après Ku et Ks ; une valeur absente est indiquée « Non exposé ».",
                 styles["body"],
             )
@@ -709,7 +838,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
     story.append(CondPageBreak(45 * mm))
     if "coefficients" in config.sections:
         story.append(CondPageBreak(45 * mm))
-        story.append(Paragraph("7. Coefficients Ku et Ks", styles["h1"]))
+        story.append(_p("7. Coefficients Ku et Ks", styles["h1"]))
         data = [["Élément", "Type", "Ku", "Ks"]]
         for item in payload.get("loads", []):
             data.append(
@@ -736,7 +865,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
 
     story.append(CondPageBreak(45 * mm))
     if "phases" in config.sections:
-        story.append(Paragraph("8. Répartition des phases et déséquilibre", styles["h1"]))
+        story.append(_p("8. Répartition des phases et déséquilibre", styles["h1"]))
         phases = payload.get("totals", {})
         phase_data: list[list[object]] = [["Phase", "P (W)", "Q (var)", "S (kVA)", "I (A)"]]
         for phase in ("l1", "l2", "l3"):
@@ -759,29 +888,29 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
             )
         )
         story.append(
-            Paragraph(
+            _p(
                 f"Neutre : {_display(phases.get('neutral_current_a'), config.decimals)} A · Déséquilibre : {_display(phases.get('unbalance_percent'), config.decimals)} %",
                 styles["body"],
             )
         )
         story.append(
-            Paragraph("Valeurs moteur, sans répartition théorique recalculée.", styles["body"])
+            _p("Valeurs moteur, sans répartition théorique recalculée.", styles["body"])
         )
 
     story.append(CondPageBreak(45 * mm))
     if "assumptions" in config.sections and config.include_assumptions:
-        story.append(Paragraph("9. Hypothèses et limites", styles["h1"]))
+        story.append(_p("9. Hypothèses et limites", styles["h1"]))
         for item in payload.get("assumptions", []):
-            story.append(Paragraph(f"• {_xml(item)}", styles["body"]))
+            story.append(_p(f"• {item}", styles["body"]))
         story.append(
-            Paragraph(
+            _p(
                 "S/I individuels récepteur : issus des contributions moteur après Ku et Ks. Cos φ global : non exposé. Les résultats ne constituent pas une note de calcul normative complète.",
                 styles["body"],
             )
         )
 
     if "traceability" in config.sections and config.include_traceability:
-        story.append(Paragraph("10. Traçabilité des résultats", styles["h1"]))
+        story.append(_p("10. Traçabilité des résultats", styles["h1"]))
         trace: list[list[object]] = [
             ["Élément", "Valeur"],
             ["Identifiant projet", snapshot.project_id],

@@ -969,7 +969,7 @@ class ProjectStore:
             try:
                 feeder = project.electrical.feeder_map().get(payload["feeder_id"])
                 if feeder is None:
-                    raise ProjectStoreError("DEPART_INTROUVABLE", "Depart introuvable.", 404)
+                    raise ProjectStoreError("DEPART_INTROUVABLE", "Départ introuvable.", 404)
                 parent = project.electrical.board_map().get(feeder.parent_board_id)
                 if parent is None:
                     raise ProjectStoreError(
@@ -1025,7 +1025,7 @@ class ProjectStore:
                     ):
                         raise ProjectStoreError(
                             "DISTRIBUTION_CHANGEMENT_INCOMPATIBLE",
-                            "La distribution du depart ne correspond pas au tableau aval.",
+                            "La distribution du départ ne correspond pas au tableau aval.",
                             422,
                         )
                 electrical = project.electrical.replace_feeder(updated)
@@ -1097,11 +1097,11 @@ class ProjectStore:
             try:
                 current = project.electrical.load_map().get(payload["load_id"])
                 if current is None:
-                    raise ProjectStoreError("CHARGE_INTROUVABLE", "Recepteur introuvable.", 404)
+                    raise ProjectStoreError("CHARGE_INTROUVABLE", "Récepteur introuvable.", 404)
                 feeder_id = payload.get("feeder_id") or current.feeder_id
                 target_feeder = project.electrical.feeder_map().get(feeder_id)
                 if target_feeder is None:
-                    raise ProjectStoreError("DEPART_INTROUVABLE", "Depart introuvable.", 404)
+                    raise ProjectStoreError("DEPART_INTROUVABLE", "Départ introuvable.", 404)
                 target_board = project.electrical.board_map().get(target_feeder.parent_board_id)
                 load = Load(
                     load_id=current.entry.load_id,
