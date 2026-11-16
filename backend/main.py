@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import secrets
 import threading
 from collections.abc import Callable
@@ -29,6 +30,7 @@ TOKEN_HEADER = "x-segyr-token"
 MAX_API_BODY_BYTES = 16_384
 MAX_LOGO_BODY_BYTES = 5 * 1024 * 1024 + 4_096
 ALLOWED_HOSTS = {"127.0.0.1", "localhost"}
+_ASSET_REFERENCE = re.compile(r'((?:src|href)=")(/assets/[^"?#]+)(")')
 
 
 class PowerRequest(BaseModel):
@@ -452,8 +454,7 @@ def create_app(
             "configured": bool(profile.get("configured")),
         }
 
-    if static_dir.is_dir():
-        app.mount("/assets", StaticFiles(directory=static_dir), name="assets")
+    app.mount("/assets", StaticFiles(directory=static_dir, check_dir=False), name="assets")
 
     @app.middleware("http")
     async def local_boundary(request: Request, call_next):
@@ -501,6 +502,8 @@ def create_app(
         response = await call_next(request)
         _append_diagnostic("http-events", {"path": path, "status": response.status_code})
         _security_headers(response, api=path.startswith("/api/"), host=host)
+        if path.startswith("/assets/") and response.status_code >= 400:
+            response.headers["Cache-Control"] = "no-store"
         return response
 
     @app.exception_handler(Exception)
@@ -519,6 +522,11 @@ def create_app(
         html = index_path.read_text(encoding="utf-8")
         if "__SEGYR_SESSION_TOKEN__" not in html:
             return HTMLResponse("Jeton de session non injectable.", status_code=503)
+        build_id = f"{index_path.stat().st_mtime_ns:x}"
+        html = _ASSET_REFERENCE.sub(
+            lambda match: f"{match.group(1)}{match.group(2)}?v={build_id}{match.group(3)}",
+            html,
+        )
         return HTMLResponse(html.replace("__SEGYR_SESSION_TOKEN__", token))
 
     @app.get("/api/engine/info")

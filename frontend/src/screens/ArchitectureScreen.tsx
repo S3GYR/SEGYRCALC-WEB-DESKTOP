@@ -20,6 +20,7 @@ import {
   updateLoad,
 } from "../api";
 import { ConfirmDialog } from "../components/ConfirmDialog";
+import { ElectricalGraphView } from "../components/ElectricalGraphView";
 import { EntityDialog } from "../components/EntityDialog";
 import { FeederLoadDialog } from "../components/FeederLoadDialog";
 import { MoveDuplicateDialog } from "../components/MoveDuplicateDialog";
@@ -27,6 +28,7 @@ import { PageHeader } from "../components/PageHeader";
 import { SourcePanel } from "../components/SourcePanel";
 import { SearchInput } from "../components/SearchInput";
 import { SummaryCard } from "../components/SummaryCard";
+import { Tabs } from "../components/Tabs";
 import { Toolbar } from "../components/Toolbar";
 import { TreeView } from "../components/TreeView";
 import { allowedDistributionTypes } from "../data/distribution";
@@ -79,6 +81,7 @@ export function ArchitectureScreen({
   historyBusy: boolean;
 }) {
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<"tree" | "graph">("tree");
   const [dialog, setDialog] = useState<DialogState>(null);
   const [feederLoadOpen, setFeederLoadOpen] = useState(false);
   const [actionDialog, setActionDialog] = useState<ActionState>(null);
@@ -327,19 +330,34 @@ export function ArchitectureScreen({
       />
       <SourcePanel project={project} onProjectChanged={onProjectChanged} onToast={onToast} />
       {error && <div className="inline-alert inline-alert-error"><Icon name="alert" size={16} /><span>{error}</span></div>}
-      <div className="architecture-layout">
-        <section className="panel tree-panel" aria-label="Arborescence électrique">
+      <div className={`architecture-layout ${view === "graph" ? "architecture-graph-layout" : ""}`}>
+        <section className={`panel ${view === "tree" ? "tree-panel" : "graph-panel"}`} aria-label={view === "tree" ? "Arborescence électrique" : "Schéma électrique fonctionnel"}>
           <div className="panel-head">
-            <div><span className="eyebrow">Explorateur</span><h2>Hiérarchie</h2></div>
+            <div><span className="eyebrow">Explorateur</span><h2>{view === "tree" ? "Hiérarchie" : "Schéma graphique"}</h2></div>
             <span className="mini-badge">{project.project.board_count} tableaux</span>
           </div>
           <div className="toolbar toolbar-inside">
-            <SearchInput label="Rechercher dans l’arborescence" value={search} onChange={setSearch} placeholder="Tableau, départ, récepteur…" testId="architecture-search" />
+            <Tabs<"tree" | "graph">
+              label="Vue de l’architecture"
+              active={view}
+              onChange={setView}
+              items={[
+                { id: "tree", label: "Arborescence", testId: "architecture-view-tree" },
+                { id: "graph", label: "Schéma graphique", testId: "architecture-view-graph" },
+              ]}
+            />
+            {view === "tree" && (
+              <SearchInput label="Rechercher dans l’arborescence" value={search} onChange={setSearch} placeholder="Tableau, départ, récepteur…" testId="architecture-search" />
+            )}
           </div>
-          <div className="tree-scroll" tabIndex={0} role="region" aria-label="Arborescence électrique — zone défilante">
-            <TreeView nodes={tree} selection={selection} onSelect={onSelect} search={search} emptyMessage="Aucun élément ne correspond à la recherche." ariaLabel="Arborescence électrique" />
-          </div>
-          <div className="panel-foot"><span className="muted-copy"><Icon name="lock" size={12} /> Aucune écriture sans sauvegarde.</span></div>
+          {view === "tree" ? (
+            <div className="tree-scroll" tabIndex={0} role="region" aria-label="Arborescence électrique — zone défilante">
+              <TreeView nodes={tree} selection={selection} onSelect={onSelect} search={search} emptyMessage="Aucun élément ne correspond à la recherche." ariaLabel="Arborescence électrique" />
+            </div>
+          ) : (
+            <ElectricalGraphView key={`${project.project.id}:${project.state.revision}`} project={project} selection={selection} onSelect={onSelect} />
+          )}
+          <div className="panel-foot"><span className="muted-copy"><Icon name="lock" size={12} /> {view === "tree" ? "Aucune écriture sans sauvegarde." : "Lecture seule — navigation et sélection uniquement."}</span></div>
         </section>
         <section className="panel" aria-label="Propriétés de l’élément sélectionné" tabIndex={0} role="region">
           <PropertyContent project={project} selection={selection} temporaryEdits={temporaryEdits} onEditDesignation={onEditDesignation} onReset={onReset} />

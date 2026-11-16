@@ -411,6 +411,68 @@ th { position: relative; }
 .architecture-layout { display: grid; grid-template-columns: minmax(280px, 0.62fr) minmax(0, 1.38fr); gap: 12px; align-items: start; }
 .architecture-layout > .panel { min-height: 470px; }
 .architecture-layout > .panel:last-child { max-height: 650px; overflow: auto; }
+.architecture-layout.architecture-graph-layout { grid-template-columns: minmax(0, 1fr) minmax(280px, 0.38fr); }
+.architecture-layout.architecture-graph-layout > .panel:first-child { min-height: 650px; }
+
+.graph-panel { display: flex; flex-direction: column; }
+.graph-panel .electrical-graph-shell { flex: 1; }
+.electrical-graph-shell { display: flex; flex-direction: column; gap: 8px; min-height: 560px; padding: 0 12px 12px; }
+.graph-legend { display: flex; flex-wrap: wrap; gap: 12px; padding: 8px 0 0; color: var(--muted); font-size: 9px; }
+.graph-legend span { border: 1px solid var(--border); border-radius: 99px; padding: 3px 8px; }
+.graph-zoom-label { margin-left: auto; }
+.graph-view-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding-top: 8px; }
+.graph-breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; min-width: 180px; color: var(--muted); font-size: 9px; }
+.graph-breadcrumb button { padding: 2px 5px; border: 0; border-radius: 4px; background: transparent; color: var(--text); cursor: pointer; font: inherit; }
+.graph-breadcrumb button:hover { background: var(--bg-deep); }
+.graph-breadcrumb button:disabled, .graph-breadcrumb button.is-current { color: var(--muted); cursor: default; font-weight: 600; }
+.graph-breadcrumb-segment { display: inline-flex; align-items: center; gap: 4px; }
+.graph-view-actions { display: flex; flex-wrap: wrap; gap: 4px; margin-left: auto; }
+.graph-view-context { padding: 5px 8px; border-left: 2px solid var(--red); color: var(--muted); font-size: 9px; }
+.graph-fit-warning, .graph-hidden-selection { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 8px; border: 1px solid color-mix(in srgb, var(--warn) 35%, var(--border)); border-radius: 6px; background: color-mix(in srgb, var(--warn) 5%, var(--surface)); color: var(--muted); font-size: 9px; }
+.graph-hidden-selection button { margin-left: auto; }
+.electrical-node-toggle { display: grid; place-items: center; width: 18px; height: 18px; padding: 0; border: 1px solid var(--border); border-radius: 4px; background: var(--bg-deep); color: var(--text); cursor: pointer; font: inherit; font-size: 13px; line-height: 1; }
+.electrical-node-toggle:hover { border-color: var(--red); color: var(--red); }
+.electrical-node-descendants { display: block; margin-top: 4px; color: var(--muted); font-size: 7.5px; }
+.electrical-flow.is-compact .electrical-node { min-height: 64px; padding: 6px 8px; }
+.electrical-flow.is-compact .electrical-node small, .electrical-flow.is-compact .electrical-node-metrics, .electrical-flow.is-compact .electrical-node-descendants { display: none; }
+.electrical-flow.is-compact .electrical-node strong { margin-top: 2px; font-size: 9px; }
+.electrical-flow { position: relative; min-height: 500px; height: 500px; flex: 1; overflow: hidden; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); }
+.electrical-flow .react-flow { width: 100%; height: 500px !important; }
+.electrical-node { width: 230px; min-height: 94px; padding: 9px 10px; border: 1px solid var(--border); border-left: 4px solid var(--navy-3); border-radius: 7px; background: var(--surface); color: var(--text); box-shadow: 0 3px 12px color-mix(in srgb, var(--navy) 8%, transparent); font-family: inherit; }
+.electrical-node.is-selected { outline: 2px solid var(--red); outline-offset: 2px; }
+.electrical-node-board { border-left-color: var(--red); }
+.electrical-node-feeder { border-left-color: var(--navy-3); }
+.electrical-node-load { border-left-color: var(--muted); }
+.electrical-node-aggregate { border-style: dashed; border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 5%, var(--surface)); }
+.electrical-node-source { border-left-color: var(--navy-3); background: color-mix(in srgb, var(--navy-3) 6%, var(--surface)); }
+.electrical-node-aggregate-counts { display: flex; flex-wrap: wrap; gap: 4px 8px; margin-top: 6px; color: var(--muted); font-size: 8px; }
+.electrical-node-open { margin-top: 6px; padding: 3px 7px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); color: var(--text); cursor: pointer; font: inherit; font-size: 8px; }
+.electrical-node-open:hover { border-color: var(--red); color: var(--red); }
+.electrical-node.is-presentation { min-height: 86px; }
+.graph-view-actions .button.is-active { border-color: var(--red); color: var(--red); background: var(--red-soft); }
+.graph-mode-badge { border-color: var(--navy-3); color: var(--navy-3); }
+.electrical-edge-aggregated .react-flow__edge-path { stroke: var(--warn); stroke-dasharray: 5 4; }
+.electrical-node-load.is-unassigned { border-style: dashed; border-left-style: solid; border-left-color: var(--warn); opacity: .92; }
+.electrical-node-unassigned-group { width: 230px; border-style: dashed; border-left-color: var(--warn); background: color-mix(in srgb, var(--warn) 5%, var(--surface)); }
+.electrical-node-head { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 8px; letter-spacing: .04em; }
+.electrical-node-head .dot { margin-left: auto; }
+.electrical-node-icon { color: var(--red); font-size: 12px; }
+.electrical-node strong { display: block; overflow: hidden; margin-top: 3px; font-size: 10.5px; text-overflow: ellipsis; white-space: nowrap; }
+.electrical-node small { display: block; overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.electrical-node-metrics { display: flex; flex-wrap: wrap; gap: 3px 8px; margin-top: 6px; padding-top: 5px; border-top: 1px solid var(--border); color: var(--muted); font-size: 8px; }
+.electrical-node-metrics b { color: var(--text); font-weight: 600; }
+.electrical-node-metrics em, .electrical-node > em { color: var(--muted); font-size: 8px; font-style: normal; }
+.electrical-node-unassigned-group > em { display: block; margin-top: 6px; }
+.graph-diagnostics { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; color: var(--muted); font-size: 9px; }
+.graph-diagnostics > strong { color: var(--text); }
+.graph-diagnostics details { flex-basis: 100%; color: var(--muted); font-size: 8.5px; }
+.graph-diagnostics ul { max-height: 110px; overflow: auto; margin: 5px 0 0; padding-left: 16px; }
+.graph-diagnostics li { margin: 2px 0; }
+.electrical-flow .react-flow__attribution { font-size: 7px; opacity: .65; }
+.electrical-flow .react-flow__viewport { pointer-events: auto; }
+.electrical-flow .react-flow__viewport-portal { pointer-events: none; }
+.electrical-flow .react-flow__viewport-portal > * { pointer-events: auto; }
+
 
 .info-list { display: flex; flex-direction: column; margin: 0; padding: 7px 18px 12px; }
 .info-list > div { display: flex; justify-content: space-between; gap: 16px; padding: 8px 0; border-bottom: 1px dashed var(--border); }
@@ -793,4 +855,13 @@ th { position: relative; }
 .source-summary span {
   color: var(--text-soft);
   font-size: 10.5px;
+}
+
+@media (max-width: 1180px) {
+  .architecture-layout.architecture-graph-layout { grid-template-columns: 1fr; }
+}
+@media (max-width: 720px) {
+  .electrical-flow { min-height: 420px; }
+  .electrical-flow .react-flow { height: 420px !important; }
+  .graph-legend { gap: 6px; }
 }

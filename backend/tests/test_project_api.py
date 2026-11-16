@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import stat
 from pathlib import Path
 from typing import Any
@@ -12,13 +13,46 @@ from backend.project_commands import CommandProjectStore
 
 TOKEN = "web03-test-token"
 AUTH = {"X-SEGYR-Token": TOKEN}
-WORKTREE = Path(__file__).resolve().parents[4] / "SEGYRCALC-V1.5-UI-ERGONOMIE-01" / "worktree"
+
+
+def _find_engine_worktree() -> Path:
+    """Resolve the external V1.5 worktree independently of repository depth."""
+    candidates: list[Path] = []
+    configured_fixture = os.environ.get("SEGYR_PROJECT_FIXTURE")
+    if configured_fixture:
+        fixture = Path(configured_fixture).expanduser().resolve()
+        if fixture.is_file():
+            candidates.append(fixture.parent.parent)
+    configured_source = os.environ.get("SEGYR_ENGINE_SRC")
+    if configured_source:
+        source = Path(configured_source).expanduser().resolve()
+        candidates.append(source.parent if source.name == "src" else source)
+    for parent in Path(__file__).resolve().parents:
+        candidates.append(parent / "SEGYRCALC-V1.5-UI-ERGONOMIE-01" / "worktree")
+    for candidate in candidates:
+        if (
+            (candidate / "examples" / "recette-business-acceptance-v1.3.json").is_file()
+            and (
+                candidate / "fixtures" / "project_enedis_c5.calcelect-v1.4.json"
+            ).is_file()
+        ):
+            return candidate
+    raise FileNotFoundError(
+        "Worktree SEGYRCALC-V1.5 introuvable; définir SEGYR_ENGINE_SRC "
+        "ou SEGYR_PROJECT_FIXTURE."
+    )
+
+
+WORKTREE = _find_engine_worktree()
 EXAMPLES = WORKTREE / "examples"
 V14_FIXTURE = WORKTREE / "fixtures" / "project_enedis_c5.calcelect-v1.4.json"
 
 
 def client(root: Path) -> TestClient:
-    store = CommandProjectStore(root=root)
+    store = CommandProjectStore(
+        root=root,
+        read_roots=(EXAMPLES, WORKTREE / "fixtures"),
+    )
     return TestClient(create_app(TOKEN, allow_test_host=True, project_store=store))
 
 
