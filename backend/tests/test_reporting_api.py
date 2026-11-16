@@ -156,6 +156,9 @@ def test_report_preview_uses_engine_values_and_snapshot(tmp_path: Path) -> None:
         assert body["snapshot"]["calculation_revision"] == project["state"]["revision"]
         assert len(body["snapshot"]["source_sha256"]) == 64
         assert len(body["boards"]) == 2
+        by_type = {item["type"]: item for item in body["boards"]}
+        assert by_type["TGBT"]["receivers"] == 3
+        assert by_type["DIVISIONNAIRE"]["receivers"] == 3
         assert len(body["feeders"]) >= 1
         assert len(body["receivers"]) == 3
         assert body["summary"]["totals"]["p_installed_w"] is not None
@@ -277,6 +280,13 @@ def test_pdf_xlsx_csv_exports_are_readable(tmp_path: Path) -> None:
         assert rows[1][csv_s] == first_receiver["s_after_ks_va"]
         assert rows[1][csv_i] == first_receiver["current_a"]
         assert len(rows) == 4
+
+        tableaux_raw = (csv_dir / "tableaux.csv").read_text(encoding="utf-8-sig")
+        tableaux_rows = list(csv.reader(io.StringIO(tableaux_raw), delimiter=";"))
+        receivers_column = tableaux_rows[0].index("Récepteurs")
+        csv_board_counts = {row[0]: row[receivers_column] for row in tableaux_rows[1:]}
+        for board in body["boards"]:
+            assert csv_board_counts[board["reference"]] == str(board["receivers"])
 
 
 

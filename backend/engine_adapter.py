@@ -178,6 +178,33 @@ def calculate_power_payload(request: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _physical_load_ids(
+    board: Any,
+    ancestors: frozenset[str] = frozenset(),
+) -> frozenset[str]:
+    """Return the unique receiver ids fed by a board and its downstream boards.
+
+    This projection belongs to the web adapter so the external engine source
+    stays read-only. Phase contributions identify the physical receivers; the
+    legacy engine ``load_count`` is intentionally not used because it sums
+    per-phase contributions and therefore counts a three-phase receiver three
+    times.
+    """
+    board_id = str(board.board.board_id)
+    if board_id in ancestors:
+        # The engine rejects cyclic topologies before calculation. Keep this
+        # guard so a corrupt intermediate result can never recurse forever.
+        return frozenset()
+
+    ancestors = ancestors | {board_id}
+    load_ids: set[str] = set()
+    for feeder in board.feeder_results:
+        load_ids.update(str(item.load_id) for item in feeder.contributions)
+        if feeder.downstream_board is not None:
+            load_ids.update(_physical_load_ids(feeder.downstream_board, ancestors))
+    return frozenset(load_ids)
+
+
 def _board_payload(board: Any) -> dict[str, Any]:
     return {
         "id": str(board.board.board_id),
@@ -203,7 +230,7 @@ def _board_payload(board: Any) -> dict[str, Any]:
         "unbalance_percent": _text(board.unbalance_percent),
         "status": _enum_text(board.status),
         "feeder_count": int(board.feeder_count),
-        "load_count": int(board.load_count),
+        "load_count": len(_physical_load_ids(board)),
         "diagnostics": _diagnostics(board.diagnostics),
     }
 

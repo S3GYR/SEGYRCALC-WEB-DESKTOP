@@ -1094,3 +1094,34 @@ def test_save_after_undo_and_redo_reopens_without_divergence(tmp_path: Path) -> 
         assert after_open["project"]["load_count"] == before_close["project"]["load_count"]
         assert after_open["totals"]["p_installed_w"] == before_close["totals"]["p_installed_w"]
         assert after_open["state"]["history_length"] == 0
+
+
+def test_r01_board_load_count_is_physical_and_recursive(tmp_path: Path) -> None:
+    with client(tmp_path) as api:
+        scaffold = _scaffold(api)
+        child_board_id = scaffold["new_board"]["id"]
+        load = api.post(
+            "/api/project/loads",
+            headers=AUTH,
+            json={
+                "expected_revision": current_revision(api),
+                "feeder_id": scaffold["new_feeder"]["id"],
+                "designation": "Récepteur TRI R01",
+                "network": "TRI",
+                "voltage_v": "400",
+                "nominal_power": "5000",
+                "power_unit": "W",
+                "quantity": 1,
+                "power_factor": "0.9",
+                "ku": "0.8",
+                "phase": None,
+            },
+        )
+        assert load.status_code == 200, load.text
+        payload = load.json()
+        boards = {item["id"]: item for item in payload["boards"]}
+        assert payload["project"]["load_count"] == 1
+        assert len(payload["loads"]) == 1
+        assert boards["TGBT-01"]["load_count"] == 1
+        assert boards[child_board_id]["load_count"] == 1
+        assert payload["loads"][0]["p_after_ku_w"] is not None
