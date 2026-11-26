@@ -14,6 +14,7 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
+from .presentation import engine_display_name
 from .reporting import ReportSnapshot, build_preview
 
 NAVY = "13263E"
@@ -137,7 +138,7 @@ def _project_sheet(ws: Worksheet, preview: dict[str, Any]) -> None:
         ["Déséquilibre", totals.get("unbalance_percent"), "%"],
         ["Révision", snapshot.get("revision"), ""],
         ["Calculée", snapshot.get("calculation_revision"), ""],
-        ["Moteur", preview["traceability"].get("engine", {}).get("facade"), ""],
+        ["Moteur", engine_display_name(preview["traceability"].get("engine", {}).get("facade")), ""],
         ["Version moteur", preview["traceability"].get("engine", {}).get("version"), ""],
     ]
     _rows(ws, rows, {2})
@@ -323,7 +324,7 @@ def _trace_sheet(ws: Worksheet, preview: dict[str, Any]) -> None:
         ["Référence", snapshot.get("project_reference")],
         ["Révision projet", snapshot.get("revision")],
         ["Révision calculée", snapshot.get("calculation_revision")],
-        ["Moteur", engine.get("facade")],
+        ["Moteur", engine_display_name(engine.get("facade"))],
         ["Version moteur", engine.get("version")],
         ["Source moteur", engine.get("source")],
         ["Empreinte source moteur", engine.get("engine_source_sha256")],

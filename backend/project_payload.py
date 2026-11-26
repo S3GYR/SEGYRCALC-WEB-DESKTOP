@@ -20,6 +20,7 @@ from .engine_adapter import (
     _phase_triplet,
     _text,
 )
+from .presentation import ENGINE_DISPLAY_NAME
 
 
 def _unassigned_load_payload(assignment: Any) -> dict[str, Any]:
@@ -194,7 +195,7 @@ def build_project_payload(
             "id": "engine_result",
             "label": "Résultat moteur disponible",
             "status": "PASS" if result is not None else "FAIL",
-            "detail": "calculate_project_v13 a produit un résultat."
+            "detail": f"{ENGINE_DISPLAY_NAME} a produit un résultat."
             if result is not None
             else "Aucun résultat moteur.",
         },

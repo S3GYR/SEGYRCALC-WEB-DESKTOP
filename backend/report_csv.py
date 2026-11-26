@@ -13,6 +13,7 @@ import io
 from functools import partial
 from typing import Any
 
+from .presentation import engine_display_name
 from .reporting import ReportSnapshot, build_preview
 
 FORMULA_PREFIXES = ("=", "+", "-", "@", "\t", "\r")
@@ -229,7 +230,7 @@ def generate_csv_files(snapshot: ReportSnapshot) -> dict[str, bytes]:
             ["Référence", preview["snapshot"].get("project_reference")],
             ["Révision projet", preview["snapshot"].get("revision")],
             ["Révision calculée", preview["snapshot"].get("calculation_revision")],
-            ["Moteur", engine.get("facade")],
+            ["Moteur", engine_display_name(engine.get("facade"))],
             ["Version moteur", engine.get("version")],
             ["Source moteur", engine.get("source")],
             ["Empreinte source moteur", engine.get("engine_source_sha256")],

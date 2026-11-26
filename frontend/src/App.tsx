@@ -288,7 +288,7 @@ function App() {
     const noProjectContent = screen === "settings"
       ? <SettingsScreen project={null} theme={theme} onToggleTheme={() => setTheme((value) => value === "light" ? "dark" : "light")} onNavigate={navigate} modifiedCount={0} onReset={() => undefined} />
       : screen === "about"
-        ? <AboutScreen engineVersion="1.3.0" engineFacade="calcelect.service_v13.calculate_project_v13" />
+        ? <AboutScreen engineVersion="1.3.0" />
         : screen === "clients"
         ? <ClientsScreen onToast={showToast} />
         : screen === "engine"
@@ -352,7 +352,6 @@ function App() {
         {screen === "about" && (
           <AboutScreen
             engineVersion={project.engine.version}
-            engineFacade={project.engine.facade}
           />
         )}
         {screen === "engine" && <EngineScreen />}

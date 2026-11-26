@@ -1,4 +1,5 @@
 import { shortHash } from "../format";
+import { ENGINE_DISPLAY_NAME } from "../presentation";
 import type { ProjectPayload } from "../types";
 
 export function TraceabilityPanel({ project }: { project: ProjectPayload }) {
@@ -14,8 +15,8 @@ export function TraceabilityPanel({ project }: { project: ProjectPayload }) {
       <div className="trace-body">
         <dl className="trace-grid">
           <div><dt>Projet</dt><dd className="mono">{project.project.id}</dd></div>
-          <div><dt>Moteur</dt><dd>{project.engine.version}</dd></div>
-          <div><dt>Façade</dt><dd className="mono">{project.engine.facade}</dd></div>
+          <div><dt>Moteur</dt><dd>{ENGINE_DISPLAY_NAME}</dd></div>
+          <div><dt>Version moteur</dt><dd>{project.engine.version}</dd></div>
           <div><dt>Source</dt><dd className="mono">{shortHash(project.engine.engine_source_sha256, 20)}</dd></div>
           <div><dt>Révision</dt><dd>{project.state.revision}</dd></div>
           <div><dt>Révision calculée</dt><dd>{project.state.calculation_revision ?? "—"}</dd></div>

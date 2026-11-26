@@ -6,6 +6,7 @@ import { EmptyState } from "../components/EmptyState";
 import { PageHeader } from "../components/PageHeader";
 import { StatusIndicator } from "../components/StatusIndicator";
 import { SummaryCard } from "../components/SummaryCard";
+import { ENGINE_DISPLAY_NAME } from "../presentation";
 
 export function DashboardScreen({
   project,
@@ -167,7 +168,7 @@ export function DashboardScreen({
         <section className="panel">
           <div className="panel-head"><div><span className="eyebrow">Moteur</span><h2>Autorité de calcul</h2></div><span className="outline-badge">Lecture seule</span></div>
           <dl className="info-list">
-            <div><dt>Façade projet</dt><dd className="mono">calculate_project_v13</dd></div>
+            <div><dt>Moteur de calcul</dt><dd>{ENGINE_DISPLAY_NAME}</dd></div>
             <div><dt>Contrat B3-01</dt><dd className="mono">calculate_power</dd></div>
             <div><dt>Version moteur</dt><dd>{project.engine.version}</dd></div>
             <div><dt>Empreinte source</dt><dd className="mono">{project.engine.engine_source_sha256.slice(0, 16)}…</dd></div>

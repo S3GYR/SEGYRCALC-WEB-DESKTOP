@@ -32,6 +32,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
+from .presentation import engine_display_name
 from .reporting import ReportSnapshot
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -917,7 +918,7 @@ def generate_pdf(snapshot: ReportSnapshot) -> bytes:
             ["Référence", snapshot.project_reference],
             ["Révision projet", snapshot.revision],
             ["Révision calculée", snapshot.calculation_revision],
-            ["Moteur", engine.get("facade")],
+            ["Moteur", engine_display_name(engine.get("facade"))],
             ["Version moteur", engine.get("version")],
             ["Empreinte source moteur", engine.get("engine_source_sha256")],
             ["Empreinte snapshot", snapshot.source_sha256],

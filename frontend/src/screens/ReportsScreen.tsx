@@ -20,6 +20,7 @@ import {
   shortHash,
 } from "../format";
 import { Icon } from "../icons";
+import { ENGINE_DISPLAY_NAME } from "../presentation";
 import type {
   ProjectPayload,
   ReportConfig,
@@ -546,7 +547,7 @@ export function ReportsScreen({
                 <div className="report-section report-trace-preview">
                   <h3>Traçabilité</h3>
                   <dl className="report-trace-grid">
-                    <div><dt>Moteur</dt><dd>{preview.traceability.engine.facade}</dd></div>
+                    <div><dt>Moteur</dt><dd>{ENGINE_DISPLAY_NAME}</dd></div>
                     <div><dt>Version</dt><dd>{preview.traceability.engine.version}</dd></div>
                     <div><dt>Source moteur</dt><dd className="mono">{shortHash(preview.traceability.engine.engine_source_sha256, 24)}</dd></div>
                     <div><dt>Empreinte snapshot</dt><dd className="mono">{shortHash(preview.snapshot.source_sha256, 24)}</dd></div>
