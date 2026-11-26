@@ -49,14 +49,40 @@ if ($Stop) {
 }
 
 if (-not $Python) {
-    $Python = Join-Path $Root "..\..\python-env-r6.1\Scripts\python.exe"
+    $Python = $env:SEGYR_PYTHON_EXE
+}
+if (-not $Python) {
+    $pythonCandidates = @(
+        (Join-Path $Root "..\python-env-r6.1\Scripts\python.exe"),
+        (Join-Path $Root "..\..\python-env-r6.1\Scripts\python.exe"),
+        (Join-Path $Root ".venv\Scripts\python.exe")
+    )
+    $Python = $pythonCandidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+if (-not $Python) {
+    throw "Python de qualification introuvable. Utiliser -Python ou définir SEGYR_PYTHON_EXE."
 }
 $Python = [IO.Path]::GetFullPath($Python)
 if (-not (Test-Path $Python)) {
     throw "Python de qualification introuvable: $Python"
 }
 if (-not $EngineSrc) {
-    $EngineSrc = [IO.Path]::GetFullPath((Join-Path $Root "..\..\..\SEGYRCALC-V1.5-UI-ERGONOMIE-01\worktree\src"))
+    $EngineSrc = $env:SEGYR_ENGINE_SRC
+}
+if (-not $EngineSrc) {
+    $engineCandidates = @(
+        (Join-Path $Root "..\..\SEGYRCALC-V1.5-UI-ERGONOMIE-01\worktree\src"),
+        (Join-Path $Root "..\..\..\SEGYRCALC-V1.5-UI-ERGONOMIE-01\worktree\src")
+    )
+    foreach ($candidate in $engineCandidates) {
+        if (Test-Path (Join-Path $candidate "segyr_calc\core\power.py")) {
+            $EngineSrc = $candidate
+            break
+        }
+    }
+}
+if (-not $EngineSrc) {
+    throw "Moteur électrique introuvable. Utiliser -EngineSrc ou définir SEGYR_ENGINE_SRC."
 }
 $EngineSrc = [IO.Path]::GetFullPath($EngineSrc)
 $Fixture = Join-Path (Split-Path -Parent $EngineSrc) "examples\recette-business-acceptance-v1.3.json"
