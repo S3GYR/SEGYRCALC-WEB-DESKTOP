@@ -1,0 +1,29 @@
+SEGYRCALC BETA — 0.9.0-beta.1
+================================
+
+Logiciel en cours de développement, réservé aux tests.
+Cette version BETA est un artefact de qualification, non signé.
+
+UTILISATION
+-----------
+- Ne pas utiliser les résultats pour une décision professionnelle sans
+  vérification indépendante.
+- Les calculs, exports et fonctionnalités peuvent contenir des anomalies.
+- Aucune garantie de disponibilité, de conservation ou d'exactitude n'est
+  accordée pendant la phase BETA.
+- Les projets sont stockés dans un espace BETA distinct :
+
+  %LOCALAPPDATA%\SEGYR Technologies\SEGYRCALC-BETA
+
+- La désinstallation ne supprime pas les projets utilisateur.
+- Ne pas diffuser cet installateur en dehors du groupe de test autorisé.
+
+RETOUR DES ANOMALIES
+--------------------
+Utiliser la fiche de retour fournie avec la livraison. Joindre si possible :
+version de Windows, version BETA, build ID, étapes de reproduction, résultat
+attendu, résultat observé et capture. Ne pas joindre de secrets, de mots de
+passe, de projets complets ou de données personnelles inutiles.
+
+Cette notice est un brouillon de conditions BETA à valider par le propriétaire
+avant toute diffusion externe.
