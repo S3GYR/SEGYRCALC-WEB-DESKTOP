@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { ReportsScreen } from "../screens/ReportsScreen";
+import { ENGINE_DISPLAY_NAME } from "../presentation";
 import { project } from "./fixtures";
 import type { ReportPreview } from "../types";
 
@@ -186,6 +187,8 @@ describe("ReportsScreen", () => {
     expect(screen.getByTestId("report-snapshot")).toHaveTextContent("8b7b0268-111");
     expect(screen.getAllByText("43,24 kW").length).toBeGreaterThan(0);
     expect(within(screen.getByTestId("report-table-receivers")).getAllByText("Non exposé")).toHaveLength(2);
+    expect(screen.getByText(ENGINE_DISPLAY_NAME)).toBeInTheDocument();
+    expect(screen.queryByText(project.engine.facade)).not.toBeInTheDocument();
     expect(screen.getByText(/La pagination exacte/)).toBeInTheDocument();
   });
 

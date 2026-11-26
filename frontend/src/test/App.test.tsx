@@ -91,7 +91,7 @@ describe("Application SEGYRCALC", () => {
     fireEvent.click(screen.getByTestId("nav-architecture"));
     expect(await screen.findByText("Du TGBT au récepteur.")).toBeInTheDocument();
     fireEvent.click(screen.getByTestId("nav-settings"));
-    expect(await screen.findByText("Environnement de qualification")).toBeInTheDocument();
+    expect(await screen.findByText("Environnement BETA")).toBeInTheDocument();
   });
 
   it("déclenche Annuler avec Ctrl+Z hors champ de saisie", async () => {

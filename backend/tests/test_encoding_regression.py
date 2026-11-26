@@ -62,7 +62,7 @@ def test_expected_french_labels_are_present() -> None:
 def test_html_declares_utf8_and_clean_title() -> None:
     html = (ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
     assert '<meta charset="UTF-8" />' in html
-    assert "SEGYRCALC — Bilan de puissance" in html
+    assert "SEGYRCALC BETA — Bilan de puissance" in html
 
 
 def test_http_assets_declare_utf8(tmp_path: Path) -> None:
