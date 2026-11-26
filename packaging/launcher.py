@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import ctypes
+import json
 import os
 import sys
 import tempfile
@@ -19,12 +20,14 @@ def _bundle_root() -> Path:
 def _configure_runtime() -> Path:
     bundle = _bundle_root()
     local_appdata = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
-    # The recipe build never reads production SEGYR_* root variables.
-    recipe_override = os.environ.get("SEGYR_RECETTE_DATA_ROOT")
+    # BETA uses a dedicated data root and never writes to the stable app data.
+    beta_override = os.environ.get("SEGYR_BETA_DATA_ROOT") or os.environ.get(
+        "SEGYR_RECETTE_DATA_ROOT"
+    )
     data_root = (
-        Path(recipe_override)
-        if recipe_override
-        else Path(local_appdata) / "SEGYR Technologies" / "SEGYRCALC-RECETTE"
+        Path(beta_override)
+        if beta_override
+        else Path(local_appdata) / "SEGYR Technologies" / "SEGYRCALC-BETA"
     )
     projects_root = data_root / "Projects"
     exports_root = data_root / "Exports"
@@ -42,6 +45,30 @@ def _configure_runtime() -> Path:
     os.environ["SEGYR_ENGINE_SRC"] = str(engine_src)
     os.environ["SEGYR_PROJECT_FIXTURE"] = str(fixture)
     os.environ["SEGYR_SAMPLE_PROJECT"] = str(sample)
+    os.environ["SEGYR_APP_CHANNEL"] = "BETA"
+
+    # Keep the BETA build identity in a local startup log for support.
+    try:
+        metadata_path = bundle / "build_metadata" / "build-metadata.json"
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+        (logs_root / "beta-startup.json").write_text(
+            json.dumps(
+                {
+                    "channel": "BETA",
+                    "application_version": metadata.get("application_version"),
+                    "build_id": metadata.get("build_id"),
+                    "build_git_commit": metadata.get("build_git_commit"),
+                    "build_at": metadata.get("build_at"),
+                    "engine_version": metadata.get("engine_version"),
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
 
     for path in (bundle, engine_src):
         if str(path) not in sys.path:
@@ -56,7 +83,7 @@ def main() -> int:
 
         return int(desktop_main())
     except Exception as exc:  # pragma: no cover - native startup guard
-        message = f"SEGYRCALC n'a pas pu démarrer.\n\n{exc}\n\n{traceback.format_exc()}"
+        message = f"SEGYRCALC BETA n'a pas pu démarrer.\n\n{exc}\n\n{traceback.format_exc()}"
         try:
             log = Path(tempfile.gettempdir()) / "segyrcalc-startup.log"
             log.write_text(message, encoding="utf-8")
@@ -64,7 +91,7 @@ def main() -> int:
             pass
         print(message, file=sys.stderr)
         try:
-            ctypes.windll.user32.MessageBoxW(None, message, "SEGYRCALC", 0x10)
+            ctypes.windll.user32.MessageBoxW(None, message, "SEGYRCALC BETA", 0x10)
         except Exception:
             pass
         return 2
