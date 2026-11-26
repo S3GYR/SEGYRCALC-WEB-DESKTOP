@@ -22,7 +22,7 @@ from .main import create_app
 from .project_store import DEFAULT_QUALIFICATION_ROOT
 from .reporting import EXPORT_ROOT
 
-TITLE = "SEGYRCALC - Bilan de puissance"
+TITLE = "SEGYRCALC BETA - Bilan de puissance"
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 ICON = PROJECT_ROOT / "frontend" / "public" / "assets" / "segyrcalc.ico"
 

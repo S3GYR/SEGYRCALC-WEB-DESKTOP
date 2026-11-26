@@ -1,5 +1,6 @@
 import { CompanyPanel } from "../components/CompanyPanel";
 import { PageHeader } from "../components/PageHeader";
+import { ENGINE_DISPLAY_NAME } from "../presentation";
 import { SummaryCard } from "../components/SummaryCard";
 import { shortHash } from "../format";
 import { Icon } from "../icons";
@@ -24,14 +25,14 @@ export function SettingsScreen({
     <div className="page-stack" data-testid="settings-screen">
       <PageHeader
         eyebrow="Paramètres"
-        title="Environnement de qualification"
+        title="Environnement BETA"
         description="Configuration locale, identité et contrôles du prototype. Aucune préférence persistante n’est écrite dans un fichier projet."
-        badge={<span className="outline-badge">WEB-08 · 0.8.0-r6.2</span>}
+        badge={<span className="outline-badge">BETA · 0.9.0-beta.1</span>}
       />
       <CompanyPanel />
       <section className="summary-grid summary-grid-compact">
         <SummaryCard label="Thème" value={theme === "light" ? "Clair" : "Sombre"} detail="Préférence de session" icon={theme === "light" ? "sun" : "moon"} tone="navy" />
-        <SummaryCard label="Moteur" value={project?.engine.version ?? "—"} detail={project?.engine.facade ?? "Non chargé"} icon="engine" tone="ok" />
+        <SummaryCard label="Moteur" value={project?.engine.version ?? "—"} detail={ENGINE_DISPLAY_NAME} icon="engine" tone="ok" />
         <SummaryCard label="Moteur" value="Lecture seule" detail="Écritures projet via WEB-07" icon="lock" tone="ok" />
         <SummaryCard label="Réseau" value="Hors ligne" detail="Loopback uniquement" icon="offline" tone="neutral" />
       </section>
@@ -94,7 +95,7 @@ export function SettingsScreen({
             </button>
             <button type="button" className="quick-item" onClick={() => onNavigate("about")} data-testid="settings-about">
               <span className="quick-icon"><Icon name="settings" /></span>
-              <span><strong>À propos de SEGYRCALC</strong><small>Versions, éditeur et informations techniques</small></span>
+              <span><strong>À propos de SEGYRCALC BETA</strong><small>Versions, éditeur et informations techniques</small></span>
               <Icon name="chevron" size={15} />
             </button>
           </div>

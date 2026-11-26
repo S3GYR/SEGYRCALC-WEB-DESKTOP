@@ -51,7 +51,7 @@ export function Sidebar({
       <div className="brand">
         <img src="/assets/segyrcalc-logo.png" alt="" className="brand-logo" />
         <div>
-          <div className="brand-name">SEGYRCALC</div>
+          <div className="brand-name">SEGYRCALC BETA</div>
           <div className="brand-owner">SEGYR Technologies</div>
         </div>
       </div>
@@ -80,7 +80,7 @@ export function Sidebar({
             <span>Aucun CDN · aucun service externe</span>
           </div>
         </div>
-        <div className="build-stamp">WEB-08 · 0.8.0-r6.2</div>
+        <div className="build-stamp">BETA · 0.9.0-beta.1</div>
       </div>
     </aside>
   );

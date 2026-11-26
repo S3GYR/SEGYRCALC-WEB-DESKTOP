@@ -57,9 +57,9 @@ export function Topbar({
         >
           <Icon name={theme === "light" ? "moon" : "sun"} />
         </button>
-        <div className="user-chip" title="Session locale de qualification">
+        <div className="user-chip" title="Session locale BETA">
           <span className="avatar">ST</span>
-          <span className="user-text">Qualification</span>
+          <span className="user-text">BETA</span>
         </div>
       </div>
     </header>

@@ -1,5 +1,15 @@
 # Changelog — SEGYRCALC Web Desktop
 
+## [0.9.0-beta.1] - 2026-11-16
+
+### BETA Windows 11
+
+- identité BETA et version applicative 0.9.0-beta.1 ;
+- intégration de la correction de présentation du moteur ;
+- espace de données BETA séparé de la version stable ;
+- préparation du retour des testeurs et du diagnostic local ;
+- aucun changement du moteur électrique, du format projet ou des schémas API.
+
 ## [0.8.0-r6.2] — 2026-11-15
 
 ### Stabilisation

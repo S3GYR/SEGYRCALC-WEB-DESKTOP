@@ -3,6 +3,17 @@
 Application locale Windows de calcul et de bilan de puissance électrique,
 basée sur les moteurs historiques SEGYRCALC V1.4/V1.5 en lecture seule.
 
+## Version BETA
+
+```text
+Version  : 0.9.0-beta.1
+Branche  : beta/0.9.0-beta.1
+Statut   : préparation des testeurs Windows 11
+```
+
+Cette version est une BETA de qualification. Elle n'est ni une version de
+production, ni une autorisation de diffusion externe.
+
 ## Version de référence
 
 ```text
