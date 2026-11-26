@@ -1,5 +1,5 @@
 #define MyAppName "SEGYRCALC BETA"
-#define MyAppVersion "0.9.0-beta.1"
+#define MyAppVersion "0.9.0-beta.2"
 #define MyAppPublisher "SEGYR Technologies"
 #define MyAppExeName "SEGYRCALC.exe"
 #define MyAppId "{{B6D2F7A4-3C8E-4A1B-9F52-7E1D4C8A2B63}"
@@ -11,7 +11,7 @@
 #define MyOutputDir "..\dist-installer-beta"
 #endif
 #ifndef MyOutputBaseFilename
-#define MyOutputBaseFilename "SEGYRCALC-0.9.0-beta.1-WIN11-x64-SETUP"
+#define MyOutputBaseFilename "SEGYRCALC-0.9.0-beta.2-WIN11-x64-SETUP"
 #endif
 #ifndef MyBuildId
 #define MyBuildId "UNSPECIFIED"
@@ -42,7 +42,7 @@ SetupLogging=yes
 CloseApplications=yes
 RestartApplications=no
 InfoBeforeFile=SEGYRCALC-BETA-NOTICE.txt
-VersionInfoVersion=0.9.0.1
+VersionInfoVersion=0.9.0.2
 VersionInfoCompany=SEGYR Technologies
 VersionInfoDescription=SEGYRCALC BETA build {#MyBuildId}
 VersionInfoProductName=SEGYRCALC BETA

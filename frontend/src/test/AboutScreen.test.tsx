@@ -35,8 +35,8 @@ describe("À propos de SEGYRCALC BETA", () => {
     expect(screen.getByRole("heading", { name: "À propos de SEGYRCALC BETA" })).toBeInTheDocument();
     expect(screen.getAllByText("Logiciel de bilan de puissance électrique — version BETA.").length).toBeGreaterThan(0);
     expect(screen.getAllByText("SEGYR Technologies").length).toBeGreaterThan(0);
-    expect(screen.getByText("0.9.0-beta.1")).toBeInTheDocument();
-    expect(packageJson.version).toBe("0.9.0-beta.1");
+    expect(screen.getByText("0.9.0-beta.2")).toBeInTheDocument();
+    expect(packageJson.version).toBe("0.9.0-beta.2");
     expect(screen.getByText("1.3.0")).toBeInTheDocument();
     expect(screen.getByText(ENGINE_DISPLAY_NAME)).toBeInTheDocument();
     expect(screen.queryByText(ENGINE_FACADE)).not.toBeInTheDocument();
@@ -67,7 +67,7 @@ describe("À propos de SEGYRCALC BETA", () => {
     await waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1));
     const copied = String(vi.mocked(navigator.clipboard.writeText).mock.calls[0][0]);
     expect(copied).toContain("SEGYRCALC BETA");
-    expect(copied).toContain("Version applicative : 0.9.0-beta.1");
+    expect(copied).toContain("Version applicative : 0.9.0-beta.2");
     expect(copied).toContain("Version moteur : 1.3.0");
     expect(copied).not.toContain(ENGINE_FACADE);
     expect(copied).toContain("Aucune donnée n'est envoyée automatiquement.");
@@ -81,7 +81,7 @@ describe("À propos de SEGYRCALC BETA", () => {
 
     await waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1));
     const copied = String(vi.mocked(navigator.clipboard.writeText).mock.calls[0][0]);
-    expect(copied).toContain("Version applicative : 0.9.0-beta.1");
+    expect(copied).toContain("Version applicative : 0.9.0-beta.2");
     expect(copied).toContain("Version moteur : 1.3.0");
     expect(copied).toContain(`Fonction moteur : ${ENGINE_DISPLAY_NAME}`);
     expect(copied).not.toContain(ENGINE_FACADE);

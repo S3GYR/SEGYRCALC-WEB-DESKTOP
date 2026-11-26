@@ -1,4 +1,4 @@
-SEGYRCALC BETA — 0.9.0-beta.1
+SEGYRCALC BETA — 0.9.0-beta.2
 ================================
 
 Logiciel en cours de développement, réservé aux tests.

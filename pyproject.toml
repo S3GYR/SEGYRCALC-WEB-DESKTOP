@@ -1,6 +1,6 @@
 [project]
 name = "segyrcalc-web-windows-packaging"
-version = "0.9.0b1"
+version = "0.9.0b2"
 description = "Isolated SEGYRCALC web desktop Windows packaging candidate"
 requires-python = ">=3.12"
 dependencies = [

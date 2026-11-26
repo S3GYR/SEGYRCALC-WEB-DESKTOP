@@ -27,7 +27,7 @@ export function SettingsScreen({
         eyebrow="Paramètres"
         title="Environnement BETA"
         description="Configuration locale, identité et contrôles du prototype. Aucune préférence persistante n’est écrite dans un fichier projet."
-        badge={<span className="outline-badge">BETA · 0.9.0-beta.1</span>}
+        badge={<span className="outline-badge">BETA · 0.9.0-beta.2</span>}
       />
       <CompanyPanel />
       <section className="summary-grid summary-grid-compact">

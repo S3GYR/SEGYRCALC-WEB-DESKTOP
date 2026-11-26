@@ -1,5 +1,13 @@
 # Changelog — SEGYRCALC Web Desktop
 
+## [0.9.0-beta.2] - 2026-11-26
+
+### Versionnement
+
+- passage de la version de développement à 0.9.0-beta.2 ;
+- alignement npm, PEP 440, UI, installateur et tests ;
+- aucune modification fonctionnelle, moteur ou format projet.
+
 ## [0.9.0-beta.1] - 2026-11-16
 
 ### BETA Windows 11

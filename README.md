@@ -6,7 +6,7 @@ basée sur les moteurs historiques SEGYRCALC V1.4/V1.5 en lecture seule.
 ## Version BETA
 
 ```text
-Version  : 0.9.0-beta.1
+Version  : 0.9.0-beta.2
 Branche  : beta/0.9.0-beta.1
 Statut   : préparation des testeurs Windows 11
 ```

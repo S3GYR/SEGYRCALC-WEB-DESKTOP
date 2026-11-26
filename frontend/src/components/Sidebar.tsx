@@ -80,7 +80,7 @@ export function Sidebar({
             <span>Aucun CDN · aucun service externe</span>
           </div>
         </div>
-        <div className="build-stamp">BETA · 0.9.0-beta.1</div>
+        <div className="build-stamp">BETA · 0.9.0-beta.2</div>
       </div>
     </aside>
   );

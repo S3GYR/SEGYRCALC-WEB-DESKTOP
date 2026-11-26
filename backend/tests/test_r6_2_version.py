@@ -7,8 +7,8 @@ import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-CANONICAL = "0.9.0-beta.1"
-PEP440 = "0.9.0b1"
+CANONICAL = "0.9.0-beta.2"
+PEP440 = "0.9.0b2"
 
 
 def test_python_version_is_valid_pep440_mapping() -> None:
@@ -32,8 +32,8 @@ def test_beta_installer_and_documentation_use_beta_version() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
 
-    assert '#define MyAppVersion "0.9.0-beta.1"' in installer
-    assert "VersionInfoVersion=0.9.0.1" in installer
+    assert '#define MyAppVersion "0.9.0-beta.2"' in installer
+    assert "VersionInfoVersion=0.9.0.2" in installer
     assert "VersionInfoProductVersion=0.9.0" in installer
     assert CANONICAL in readme
     assert CANONICAL in changelog
